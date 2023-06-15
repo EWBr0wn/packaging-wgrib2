@@ -63,7 +63,7 @@ jobs:
           echo "repo=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
       - name: downcase REPOSITORY_OWNER
         run: |
-          echo "repoowner=$(GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
+          echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
       - name: Shell "env"
         run: |
           env
