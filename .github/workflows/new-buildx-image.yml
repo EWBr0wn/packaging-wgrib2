@@ -24,20 +24,12 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Download cmake
-              run: |
-                make 3rd-party/cmake.tgz
-
-            - name: Prepare variables
-              id: prep
-              run: |
-                echo ${GITHUB_SHA}
-
             - name: Setup Docker Buildx
               id: buildx
               uses: docker/setup-buildx-action@v2.7.0
 
             - name: Cache Docker layers
+              id: cache-foundation
               uses: actions/cache@v1.2.1
               with:
                 path: /tmp/.buildx-cache
@@ -45,6 +37,11 @@ jobs:
                 key: ${{ runner.os }}-al2-buildx-${{ github.sha }}
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
+            
+            - name: Download cmake
+              if: steps.cache-foundation.outputs.cache-hit != 'true'
+              run: |
+                make 3rd-party/cmake.tgz
 
             - name: Build foundation image
               uses: docker/build-push-action@v4.1.1
@@ -73,16 +70,12 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Prepare variables
-              id: prep
-              run: |
-                echo ${GITHUB_SHA}
-
             - name: Setup Docker Buildx
               id: buildx
               uses: docker/setup-buildx-action@v2.7.0
 
             - name: Cache Docker layers
+              id: cache-lambda-base
               uses: actions/cache@v1.2.1
               with:
                 path: /tmp/.buildx-cache
@@ -120,20 +113,12 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Download cmake
-              run: |
-                make 3rd-party/wgrib2.tgz
-
-            - name: Prepare variables
-              id: prep
-              run: |
-                echo ${GITHUB_SHA}
-
             - name: Setup Docker Buildx
               id: buildx
               uses: docker/setup-buildx-action@v2.7.0
 
             - name: Cache Docker layers
+              id: cache-builder
               uses: actions/cache@v1.2.1
               with:
                 path: /tmp/.buildx-cache
@@ -141,6 +126,11 @@ jobs:
                 key: ${{ runner.os }}-al2-buildx-${{ github.sha }}
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
+          
+            - name: Download cmake
+              if: steps.cache-builder.outputs.cache-hit != 'true'
+              run: |
+                make 3rd-party/wgrib2.tgz
 
             - name: Build foundation image
               uses: docker/build-push-action@v4.1.1
@@ -171,11 +161,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
-
-            - name: Prepare variables
-              id: prep
-              run: |
-                echo ${GITHUB_SHA}
 
             - name: Setup Docker Buildx
               id: buildx
