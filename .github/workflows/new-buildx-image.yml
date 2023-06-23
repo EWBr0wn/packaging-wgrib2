@@ -1,0 +1,69 @@
+name: New buildx Docker Image CI
+
+on:
+  push:
+    branches:
+        - main
+        - refactor-docker-build  
+    paths-ignore:
+    - .github/workflows/*.yml
+  pull_request:
+    branches:
+      - main
+  pull_request_target:
+    branches:
+      - main
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    multi:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Download cmake
+              run: |
+                make 3rd-party/cmake.tgz
+
+            - name: Prepare variables
+              id: prep
+              run: |
+                echo ${GITHUB_SHA}
+
+            - name: Setup Docker Buildx
+              id: buildx
+              uses: actions/docker-setup-buildx@v2.7.0
+
+            - name: Cache Docker layers
+              uses: actions/cache@v1.2.1
+              with:
+                path: /tmp/.buildx-cache
+                # Key is named differently to avoid collision
+                key: ${{ runner.os }}-al2-buildx-${{ github.sha }}
+                restore-keys: |
+                  ${{ runner.os }}-al2-buildx
+
+            - name: Build foundation image
+              uses: docker/build-push-action@v4.1.1
+              with:
+                context: .
+                builder: ${{ steps.buildx.outputs.name }}
+                file: Dockerfile
+                # Set the desired build target here
+                target: foundation
+                push: false
+                tags: ${{ steps.prep.outputs.tagged_image }}
+                cache-from: type=local,src=/tmp/.buildx-cache
+                # Note the mode=max here
+                # More: https://github.com/moby/buildkit#--export-cache-options
+                # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+                cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+
+            - name: Move cache
+              run: |
+                rm -rf /tmp/.buildx-cache
+                mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
+
