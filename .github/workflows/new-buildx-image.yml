@@ -42,7 +42,7 @@ jobs:
                   ${{ runner.os }}-al2-buildx
                   
             - name: debug
-              if: steps.cache-foundation.outputs.cache-hit != 'true'
+              #if: steps.cache-foundation.outputs.cache-hit != 'true'
               run: |
                 ls -lh
                 df -h
