@@ -34,7 +34,7 @@ jobs:
               with:
                 path: |
                   /tmp/.buildx-cache
-                  cmake.tgz
+                  3rd-party/cmake.tgz
                   cmake-*
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-buildx-${{ github.job }}
@@ -127,7 +127,7 @@ jobs:
               with:
                 path: |
                   /tmp/.buildx-cache
-                  wgrib2.tgz
+                  3rd-party/wgrib2.tgz
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
