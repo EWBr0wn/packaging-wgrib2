@@ -53,7 +53,15 @@ jobs:
               if: steps.cache-foundation.outputs.cache-hit != 'true'
               run: |
                 make 3rd-party/cmake.tgz
-
+                
+            - name: debug
+              #if: steps.cache-foundation.outputs.cache-hit != 'true'
+              run: |
+                pwd
+                echo "List current directory:" && ls -lh && echo
+                echo "List ./3rd-party directory:" && ls -lh 3rd-party && echo
+                df -h
+                
             - name: Build foundation image
               uses: docker/build-push-action@v4.1.1
               with:
@@ -69,7 +77,7 @@ jobs:
                 # More: https://github.com/moby/buildkit#--export-cache-options
                 # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
                 cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-
+                
             - name: Move cache
               run: |
                 rm -rf /tmp/.buildx-cache
@@ -96,7 +104,7 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
 
-            - name: Build foundation image
+            - name: Build lambda-base image
               uses: docker/build-push-action@v4.1.1
               with:
                 context: .
@@ -146,7 +154,7 @@ jobs:
               run: |
                 make 3rd-party/wgrib2.tgz
 
-            - name: Build foundation image
+            - name: Build builder image
               uses: docker/build-push-action@v4.1.1
               with:
                 context: .
@@ -186,11 +194,11 @@ jobs:
                 path: |
                   /tmp/.buildx-cache
                 # Key is named differently to avoid collision
-                key: ${{ runner.os }}-al2-buildx-${{ github.sha }}
+                key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
 
-            - name: Build foundation image
+            - name: Build lambda-wgrib2 image
               uses: docker/build-push-action@v4.1.1
               with:
                 context: .
@@ -198,6 +206,55 @@ jobs:
                 file: Dockerfile
                 # Set the desired build target here
                 target: lambda-wgrib2
+                push: false
+                tags: ${{ steps.prep.outputs.tagged_image }}
+                cache-from: type=local,src=/tmp/.buildx-cache
+                # Note the mode=max here
+                # More: https://github.com/moby/buildkit#--export-cache-options
+                # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+                cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+
+            - name: Move cache
+              run: |
+                rm -rf /tmp/.buildx-cache
+                mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+    lambda-pywgrib2:
+        runs-on: ubuntu-latest
+        needs:
+            - builder
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Setup Docker Buildx
+              id: buildx
+              uses: docker/setup-buildx-action@v2.7.0
+
+            - name: Cache Docker layers
+              uses: actions/cache@v1.2.1
+              with:
+                path: |
+                  /tmp/.buildx-cache
+                  ./3rd-party/pywgrib2_s.py
+                # Key is named differently to avoid collision
+                key: ${{ runner.os }}-al2-buildx-${{ github.job }}
+                restore-keys: |
+                  ${{ runner.os }}-al2-buildx
+
+            - name: Download pywgrib2_s.py
+              if: steps.cache-builder.outputs.cache-hit != 'true'
+              run: |
+                make 3rd-party/pywgrib2_s.py
+
+            - name: Build lambda-pywgrib2 image
+              uses: docker/build-push-action@v4.1.1
+              with:
+                context: .
+                builder: ${{ steps.buildx.outputs.name }}
+                file: Dockerfile
+                # Set the desired build target here
+                target: lambda-pywgrib2
                 push: false
                 tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
