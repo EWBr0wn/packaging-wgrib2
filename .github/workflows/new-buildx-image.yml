@@ -32,9 +32,12 @@ jobs:
               id: cache-foundation
               uses: actions/cache@v1.2.1
               with:
-                path: /tmp/.buildx-cache
+                path: |
+                  /tmp/.buildx-cache
+                  cmake.tgz
+                  cmake-*
                 # Key is named differently to avoid collision
-                key: ${{ runner.os }}-al2-buildx-${{ github.sha }}
+                key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
             
@@ -78,9 +81,10 @@ jobs:
               id: cache-lambda-base
               uses: actions/cache@v1.2.1
               with:
-                path: /tmp/.buildx-cache
+                path: |
+                  /tmp/.buildx-cache
                 # Key is named differently to avoid collision
-                key: ${{ runner.os }}-al2-buildx-${{ github.sha }}
+                key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
 
@@ -121,9 +125,11 @@ jobs:
               id: cache-builder
               uses: actions/cache@v1.2.1
               with:
-                path: /tmp/.buildx-cache
+                path: |
+                  /tmp/.buildx-cache
+                  wgrib2.tgz
                 # Key is named differently to avoid collision
-                key: ${{ runner.os }}-al2-buildx-${{ github.sha }}
+                key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
           
@@ -169,7 +175,8 @@ jobs:
             - name: Cache Docker layers
               uses: actions/cache@v1.2.1
               with:
-                path: /tmp/.buildx-cache
+                path: |
+                  /tmp/.buildx-cache
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-buildx-${{ github.sha }}
                 restore-keys: |
