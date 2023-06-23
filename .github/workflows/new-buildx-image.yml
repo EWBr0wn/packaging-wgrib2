@@ -44,7 +44,9 @@ jobs:
             - name: debug
               #if: steps.cache-foundation.outputs.cache-hit != 'true'
               run: |
-                ls -lh
+                pwd
+                echo "List current directory:" && ls -lh && echo
+                echo "List ./3rd-party directory:" && ls -lh 3rd-party && echo
                 df -h
                 
             - name: Download cmake
