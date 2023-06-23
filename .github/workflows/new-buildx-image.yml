@@ -114,7 +114,8 @@ jobs:
 
     builder:
         runs-on: ubuntu-latest
-        needs: foundation
+        needs: 
+            - foundation
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -164,7 +165,9 @@ jobs:
 
     lambda-wgrib2:
         runs-on: ubuntu-latest
-        needs: lambda-base
+        needs:
+            - lambda-base
+            - builder
         steps:
             - name: Checkout
               uses: actions/checkout@v3
