@@ -40,7 +40,13 @@ jobs:
                 key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
-            
+                  
+            - name: debug
+              if: steps.cache-foundation.outputs.cache-hit != 'true'
+              run: |
+                ls -lh
+                df -h
+                
             - name: Download cmake
               if: steps.cache-foundation.outputs.cache-hit != 'true'
               run: |
