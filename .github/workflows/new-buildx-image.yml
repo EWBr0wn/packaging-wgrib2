@@ -70,7 +70,7 @@ jobs:
                 file: Dockerfile
                 # Set the desired build target here
                 target: foundation
-                push: true
+                push: false
                 tags: latest
                 #tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
@@ -78,6 +78,12 @@ jobs:
                 # More: https://github.com/moby/buildkit#--export-cache-options
                 # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
                 cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+                
+            - name: Debug docker
+              #if: steps.cache-foundation.outputs.cache-hit != 'true'
+              run: |
+                echo "Docker ps output:" && docker ps -a && echo
+                echo "Docker buildx ls output:" && docker buildx ls && echo
                 
             - name: Move cache
               run: |
@@ -104,6 +110,12 @@ jobs:
                 key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
+                  
+            - name: Debug docker
+              #if: steps.cache-foundation.outputs.cache-hit != 'true'
+              run: |
+                echo "Docker ps output:" && docker ps -a && echo
+                echo "Docker buildx ls output:" && docker buildx ls && echo
 
             - name: Build lambda-base image
               uses: docker/build-push-action@v4.1.1
@@ -121,6 +133,12 @@ jobs:
                 # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
                 cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
+            - name: Debug docker
+              #if: steps.cache-foundation.outputs.cache-hit != 'true'
+              run: |
+                echo "Docker ps output:" && docker ps -a && echo
+                echo "Docker buildx ls output:" && docker buildx ls && echo
+                
             - name: Move cache
               run: |
                 rm -rf /tmp/.buildx-cache
@@ -150,6 +168,12 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
           
+            - name: Debug docker
+              #if: steps.cache-foundation.outputs.cache-hit != 'true'
+              run: |
+                echo "Docker ps output:" && docker ps -a && echo
+                echo "Docker buildx ls output:" && docker buildx ls && echo
+                
             - name: Download cmake
               if: steps.cache-builder.outputs.cache-hit != 'true'
               run: |
@@ -171,6 +195,12 @@ jobs:
                 # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
                 cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
+            - name: Debug docker
+              #if: steps.cache-foundation.outputs.cache-hit != 'true'
+              run: |
+                echo "Docker ps output:" && docker ps -a && echo
+                echo "Docker buildx ls output:" && docker buildx ls && echo
+                
             - name: Move cache
               run: |
                 rm -rf /tmp/.buildx-cache
