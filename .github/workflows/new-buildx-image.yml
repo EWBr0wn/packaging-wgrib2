@@ -10,11 +10,36 @@ on:
   pull_request:
     branches:
       - main
-  
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
+    ## Gleaned from https://docs.docker.com/build/ci/github-actions/local-registry/
+    docker-registry:
+      runs-on: ubuntu-latest
+      services:
+        registry:
+          image: registry:2
+          ports:
+            - 5000:5000
+      steps:
+        -
+          name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+          with:
+            driver-opts: network=host
+        -
+          name: Build and push to local registry
+          uses: docker/build-push-action@v4
+          with:
+            context: .
+            push: true
+            tags: localhost:5000/name/app:latest
+        -
+          name: Inspect
+          run: |
+            docker buildx imagetools inspect localhost:5000/name/app:latest
+
     foundation:
         runs-on: ubuntu-latest
         steps:
@@ -66,8 +91,8 @@ jobs:
                 file: Dockerfile
                 # Set the desired build target here
                 target: foundation
-                push: false
-                tags: foundation:latest
+                push: true
+                tags: localhost:5000/local/foundation:latest
                 #tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
                 # Note the mode=max here
@@ -86,6 +111,10 @@ jobs:
               run: |
                 rm -rf /tmp/.buildx-cache
                 mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
+            
+            - name: Inspect foundation
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/foundation:latest
 
     lambda-base:
         runs-on: ubuntu-latest
@@ -113,6 +142,10 @@ jobs:
               run: |
                 echo "Docker ps output:" && docker ps -a && echo
                 echo "Docker buildx ls output:" && docker buildx ls && echo
+            
+            - name: Inspect foundation
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/foundation:latest
 
             - name: Build lambda-base image
               uses: docker/build-push-action@v4.1.1
@@ -122,8 +155,9 @@ jobs:
                 file: Dockerfile
                 # Set the desired build target here
                 target: lambda-base
-                push: false
-                tags: ${{ steps.prep.outputs.tagged_image }}
+                push: true
+                tags: localhost:5000/local/lambda-base:latest
+                # tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
                 # Note the mode=max here
                 # More: https://github.com/moby/buildkit#--export-cache-options
@@ -141,6 +175,14 @@ jobs:
               run: |
                 rm -rf /tmp/.buildx-cache
                 mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
+            
+            - name: Inspect foundation
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/foundation:latest
+            
+            - name: Inspect lambda-base
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/lambda-base:latest
 
     builder:
         runs-on: ubuntu-latest
@@ -178,6 +220,14 @@ jobs:
               run: |
                 make 3rd-party/wgrib2.tgz
 
+            - name: Inspect foundation
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/foundation:latest
+            
+            - name: Inspect lambda-base
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/lambda-base:latest
+                
             - name: Build builder image
               uses: docker/build-push-action@v4.1.1
               with:
@@ -186,8 +236,9 @@ jobs:
                 file: Dockerfile
                 # Set the desired build target here
                 target: builder
-                push: false
-                tags: ${{ steps.prep.outputs.tagged_image }}
+                push: true
+                tags: localhost:5000/local/builder:latest
+                #tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
                 # Note the mode=max here
                 # More: https://github.com/moby/buildkit#--export-cache-options
@@ -205,6 +256,19 @@ jobs:
               run: |
                 rm -rf /tmp/.buildx-cache
                 mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
+            
+            - name: Inspect foundation
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/foundation:latest
+            
+            - name: Inspect lambda-base
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/lambda-base:latest
+
+            - name: Inspect builder
+              run: |
+                docker buildx imagetools inspect localhost:5000/local/builder:latest
+
 
     lambda-wgrib2:
         runs-on: ubuntu-latest
