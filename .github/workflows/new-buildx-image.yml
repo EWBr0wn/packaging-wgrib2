@@ -174,10 +174,6 @@ jobs:
               run: |
                 echo "Docker ps output:" && docker ps -a && echo
                 echo "Docker buildx ls output:" && docker buildx ls && echo
-            
-            - name: Inspect foundation
-              run: |
-                docker buildx imagetools inspect localhost:5000/foundation:latest
 
             - name: Build lambda-base image
               uses: docker/build-push-action@v4.1.1
@@ -207,10 +203,6 @@ jobs:
               run: |
                 rm -rf /tmp/.buildx-cache
                 mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
-            
-            - name: Inspect foundation
-              run: |
-                docker buildx imagetools inspect localhost:5000/foundation:latest
             
             - name: Inspect lambda-base
               run: |
@@ -271,10 +263,6 @@ jobs:
             - name: Inspect foundation
               run: |
                 docker buildx imagetools inspect localhost:5000/foundation:latest
-            
-            - name: Inspect lambda-base
-              run: |
-                docker buildx imagetools inspect localhost:5000/lambda-base:latest
                 
             - name: Build builder image
               uses: docker/build-push-action@v4.1.1
@@ -308,10 +296,6 @@ jobs:
             - name: Inspect foundation
               run: |
                 docker buildx imagetools inspect localhost:5000/foundation:latest
-            
-            - name: Inspect lambda-base
-              run: |
-                docker buildx imagetools inspect localhost:5000/lambda-base:latest
 
             - name: Inspect builder
               run: |
