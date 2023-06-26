@@ -39,6 +39,11 @@ jobs:
 
     foundation:
         runs-on: ubuntu-latest
+        services:
+          registry:
+            image: registry:2
+            ports:
+              - 5000:5000
         needs: 
         - docker-registry
         steps:
@@ -102,7 +107,7 @@ jobs:
                 # Set the desired build target here
                 target: foundation
                 push: true
-                tags: localhost:5000/local/foundation:latest
+                tags: localhost:5000/foundation:latest
                 #tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
                 # Note the mode=max here
@@ -124,10 +129,15 @@ jobs:
             
             - name: Inspect foundation
               run: |
-                docker buildx imagetools inspect localhost:5000/local/foundation:latest
+                docker buildx imagetools inspect localhost:5000/foundation:latest
 
     lambda-base:
         runs-on: ubuntu-latest
+        services:
+          registry:
+            image: registry:2
+            ports:
+              - 5000:5000
         needs: 
             - docker-registry
         steps:
@@ -167,7 +177,7 @@ jobs:
             
             - name: Inspect foundation
               run: |
-                docker buildx imagetools inspect localhost:5000/local/foundation:latest
+                docker buildx imagetools inspect localhost:5000/foundation:latest
 
             - name: Build lambda-base image
               uses: docker/build-push-action@v4.1.1
@@ -178,7 +188,7 @@ jobs:
                 # Set the desired build target here
                 target: lambda-base
                 push: true
-                tags: localhost:5000/local/lambda-base:latest
+                tags: localhost:5000/lambda-base:latest
                 # tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
                 # Note the mode=max here
@@ -200,14 +210,19 @@ jobs:
             
             - name: Inspect foundation
               run: |
-                docker buildx imagetools inspect localhost:5000/local/foundation:latest
+                docker buildx imagetools inspect localhost:5000/foundation:latest
             
             - name: Inspect lambda-base
               run: |
-                docker buildx imagetools inspect localhost:5000/local/lambda-base:latest
+                docker buildx imagetools inspect localhost:5000/lambda-base:latest
 
     builder:
         runs-on: ubuntu-latest
+        services:
+          registry:
+            image: registry:2
+            ports:
+              - 5000:5000
         needs: 
             - foundation
         steps:
@@ -255,11 +270,11 @@ jobs:
 
             - name: Inspect foundation
               run: |
-                docker buildx imagetools inspect localhost:5000/local/foundation:latest
+                docker buildx imagetools inspect localhost:5000/foundation:latest
             
             - name: Inspect lambda-base
               run: |
-                docker buildx imagetools inspect localhost:5000/local/lambda-base:latest
+                docker buildx imagetools inspect localhost:5000/lambda-base:latest
                 
             - name: Build builder image
               uses: docker/build-push-action@v4.1.1
@@ -270,7 +285,7 @@ jobs:
                 # Set the desired build target here
                 target: builder
                 push: true
-                tags: localhost:5000/local/builder:latest
+                tags: localhost:5000/builder:latest
                 #tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
                 # Note the mode=max here
@@ -292,18 +307,23 @@ jobs:
             
             - name: Inspect foundation
               run: |
-                docker buildx imagetools inspect localhost:5000/local/foundation:latest
+                docker buildx imagetools inspect localhost:5000/foundation:latest
             
             - name: Inspect lambda-base
               run: |
-                docker buildx imagetools inspect localhost:5000/local/lambda-base:latest
+                docker buildx imagetools inspect localhost:5000/lambda-base:latest
 
             - name: Inspect builder
               run: |
-                docker buildx imagetools inspect localhost:5000/local/builder:latest
+                docker buildx imagetools inspect localhost:5000/builder:latest
 
     lambda-wgrib2:
         runs-on: ubuntu-latest
+        services:
+          registry:
+            image: registry:2
+            ports:
+              - 5000:5000
         needs:
             - lambda-base
             - builder
@@ -344,8 +364,9 @@ jobs:
                 file: Dockerfile
                 # Set the desired build target here
                 target: lambda-wgrib2
-                push: false
-                tags: ${{ steps.prep.outputs.tagged_image }}
+                push: true
+                tags: localhost:5000/lambda-wgrib2:latest
+                #tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
                 # Note the mode=max here
                 # More: https://github.com/moby/buildkit#--export-cache-options
@@ -356,9 +377,30 @@ jobs:
               run: |
                 rm -rf /tmp/.buildx-cache
                 mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
+                
+            - name: Inspect foundation
+              run: |
+                docker buildx imagetools inspect localhost:5000/foundation:latest
+            
+            - name: Inspect lambda-base
+              run: |
+                docker buildx imagetools inspect localhost:5000/lambda-base:latest
+
+            - name: Inspect builder
+              run: |
+                docker buildx imagetools inspect localhost:5000/builder:latest
+                
+            - name: Inspect lambda-wgrib2
+              run: |
+                docker buildx imagetools inspect localhost:5000/lambda-wgrib2:latest
 
     lambda-pywgrib2:
         runs-on: ubuntu-latest
+        services:
+          registry:
+            image: registry:2
+            ports:
+              - 5000:5000
         needs:
             - builder
         steps:
@@ -404,8 +446,9 @@ jobs:
                 file: Dockerfile
                 # Set the desired build target here
                 target: lambda-pywgrib2
-                push: false
-                tags: ${{ steps.prep.outputs.tagged_image }}
+                push: true
+                tags: localhost:5000/lambda-pywgrib2:latest
+                #tags: ${{ steps.prep.outputs.tagged_image }}
                 cache-from: type=local,src=/tmp/.buildx-cache
                 # Note the mode=max here
                 # More: https://github.com/moby/buildkit#--export-cache-options
