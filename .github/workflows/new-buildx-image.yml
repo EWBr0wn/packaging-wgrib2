@@ -89,7 +89,7 @@ jobs:
                 df -h
                 
             - name: Download cmake
-              if: steps.cache-foundation.outputs.cache-hit != 'true'
+              #if: steps.cache-foundation.outputs.cache-hit != 'true'
               run: |
                 make 3rd-party/cmake.tgz
                 
@@ -263,8 +263,8 @@ jobs:
                 echo "Docker buildx ls output:" && docker buildx ls && echo
                 echo "Docker images output:" && docker images --all && echo
                 
-            - name: Download cmake
-              if: steps.cache-builder.outputs.cache-hit != 'true'
+            - name: Download wgrib2
+              #if: steps.cache-builder.outputs.cache-hit != 'true'
               run: |
                 make 3rd-party/wgrib2.tgz
 
@@ -430,7 +430,7 @@ jobs:
                   ${{ runner.os }}-al2-buildx
 
             - name: Download pywgrib2_s.py
-              if: steps.cache-builder.outputs.cache-hit != 'true'
+              #if: steps.cache-builder.outputs.cache-hit != 'true'
               run: |
                 make 3rd-party/pywgrib2_s.py
 
