@@ -84,8 +84,8 @@ jobs:
               #if: steps.cache-foundation.outputs.cache-hit != 'true'
               run: |
                 pwd
-                echo "List current directory:" && ls -lh && echo
-                echo "List ./3rd-party directory:" && ls -lh 3rd-party && echo
+                echo "List current directory:" && ls -lah && echo
+                echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
                 df -h
                 
             - name: Download cmake
@@ -97,8 +97,8 @@ jobs:
               #if: steps.cache-foundation.outputs.cache-hit != 'true'
               run: |
                 pwd
-                echo "List current directory:" && ls -lh && echo
-                echo "List ./3rd-party directory:" && ls -lh 3rd-party && echo
+                echo "List current directory:" && ls -lah && echo
+                echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
                 df -h
                 
             - name: Build foundation image
