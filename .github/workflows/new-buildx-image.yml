@@ -65,7 +65,7 @@ jobs:
               uses: actions/cache@v1.2.1
               with:
                 path: |
-                  3rd-party/*
+                  ${{ env.GITHUB_WORKSPACE }}/3rd-party/*
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-3rd-party
                 restore-keys: |
@@ -170,7 +170,7 @@ jobs:
               uses: actions/cache@v1.2.1
               with:
                 path: |
-                  3rd-party/*
+                  ${{ env.GITHUB_WORKSPACE }}/3rd-party/*
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-3rd-party
                 restore-keys: |
@@ -260,7 +260,7 @@ jobs:
               uses: actions/cache@v1.2.1
               with:
                 path: |
-                  3rd-party/*
+                  ${{ env.GITHUB_WORKSPACE }}/3rd-party/*
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-3rd-party
                 restore-keys: |
@@ -372,7 +372,7 @@ jobs:
               uses: actions/cache@v1.2.1
               with:
                 path: |
-                  3rd-party/*
+                  ${{ env.GITHUB_WORKSPACE }}/3rd-party/*
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-3rd-party
                 restore-keys: |
@@ -460,7 +460,7 @@ jobs:
               uses: actions/cache@v1.2.1
               with:
                 path: |
-                  3rd-party/*
+                  ${{ env.GITHUB_WORKSPACE }}/3rd-party/*
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-3rd-party
                 restore-keys: |
