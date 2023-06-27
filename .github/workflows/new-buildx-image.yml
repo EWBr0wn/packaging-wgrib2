@@ -283,12 +283,11 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-al2-buildx
                                 
-            - name: debug - pull image
+            - name: debug
               run: |
                 pwd
                 echo "List current directory:" && ls -lah && echo
                 echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
-                docker pull localhost:5000/foundation:latest
           
             - name: Debug docker
               #if: steps.cache-foundation.outputs.cache-hit != 'true'
