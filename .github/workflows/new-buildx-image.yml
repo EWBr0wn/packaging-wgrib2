@@ -74,6 +74,7 @@ jobs:
                 path: |
                   /tmp/.buildx-cache
                   ./3rd-party/cmake.tgz
+                  3rd-party/*
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
