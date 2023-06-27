@@ -61,6 +61,16 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-al2-registry
                   
+            - name: Cache downloaded software
+              uses: actions/cache@v1.2.1
+              with:
+                path: |
+                  3rd-party/*
+                # Key is named differently to avoid collision
+                key: ${{ runner.os }}-al2-3rd-party
+                restore-keys: |
+                  ${{ runner.os }}-al2-3rd-party
+                  
             - name: Setup Docker Buildx
               id: buildx
               uses: docker/setup-buildx-action@v2.7.0
@@ -73,8 +83,6 @@ jobs:
               with:
                 path: |
                   /tmp/.buildx-cache
-                  ./3rd-party/cmake.tgz
-                  3rd-party/*
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
@@ -158,6 +166,16 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-al2-registry
                   
+            - name: Cache downloaded software
+              uses: actions/cache@v1.2.1
+              with:
+                path: |
+                  3rd-party/*
+                # Key is named differently to avoid collision
+                key: ${{ runner.os }}-al2-3rd-party
+                restore-keys: |
+                  ${{ runner.os }}-al2-3rd-party
+                  
             - name: Setup Docker Buildx
               id: buildx
               uses: docker/setup-buildx-action@v2.7.0
@@ -238,6 +256,16 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-al2-registry
                   
+            - name: Cache downloaded software
+              uses: actions/cache@v1.2.1
+              with:
+                path: |
+                  3rd-party/*
+                # Key is named differently to avoid collision
+                key: ${{ runner.os }}-al2-3rd-party
+                restore-keys: |
+                  ${{ runner.os }}-al2-3rd-party
+                  
             - name: Setup Docker Buildx
               id: buildx
               uses: docker/setup-buildx-action@v2.7.0
@@ -250,7 +278,6 @@ jobs:
               with:
                 path: |
                   /tmp/.buildx-cache
-                  3rd-party/wgrib2.tgz
                 # Key is named differently to avoid collision
                 key: ${{ runner.os }}-al2-buildx-${{ github.job }}
                 restore-keys: |
@@ -334,6 +361,16 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-al2-registry
                   
+            - name: Cache downloaded software
+              uses: actions/cache@v1.2.1
+              with:
+                path: |
+                  3rd-party/*
+                # Key is named differently to avoid collision
+                key: ${{ runner.os }}-al2-3rd-party
+                restore-keys: |
+                  ${{ runner.os }}-al2-3rd-party
+                  
             - name: Setup Docker Buildx
               id: buildx
               uses: docker/setup-buildx-action@v2.7.0
@@ -411,6 +448,16 @@ jobs:
                 key: ${{ runner.os }}-al2-registry-${{ github.job }}
                 restore-keys: |
                   ${{ runner.os }}-al2-registry
+                  
+            - name: Cache downloaded software
+              uses: actions/cache@v1.2.1
+              with:
+                path: |
+                  3rd-party/*
+                # Key is named differently to avoid collision
+                key: ${{ runner.os }}-al2-3rd-party
+                restore-keys: |
+                  ${{ runner.os }}-al2-3rd-party
                   
             - name: Setup Docker Buildx
               id: buildx
