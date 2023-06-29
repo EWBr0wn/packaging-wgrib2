@@ -164,7 +164,7 @@ jobs:
                 # Again, Not what you want... rebuilding the image is not the correct answer
                 # docker build --target=foundation --output type=local,dest=$(pwd)/foundation/ .
                 # docker exec -i localhost:5000/foundation:latest 'ls -laR'
-                docker run --rm -ti localhost:5000/foundation:latest 'uname -a && pwd && ls -laRh'
+                docker run --rm -i localhost:5000/foundation:latest 'uname -a && pwd && ls -laRh'
                 echo "Directory list:" && ls -laR && echo
 
             - name: Upload a Build Artifact
