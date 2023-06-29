@@ -159,10 +159,10 @@ jobs:
               docker buildx imagetools inspect localhost:5000/foundation:latest
 
           - name: Extract Docker image hopefully
-              uses: shrink/actions-docker-extract@v2
-              with:
-                image: "localhost:5000/foundation:latest"
-                path: "/tmp/."
+            uses: shrink/actions-docker-extract@v2
+            with:
+              image: "localhost:5000/foundation"
+              path: "/tmp/."
 
           - name: Debug directory in docker
             run: |
