@@ -158,11 +158,11 @@ jobs:
             run: |
               docker buildx imagetools inspect localhost:5000/foundation:latest
 
-          - name: Extract Docker image hopefully
+          - name: Extract from Docker image
             uses: shrink/actions-docker-extract@v2
             with:
               image: "localhost:5000/foundation"
-              path: "/tmp/."
+              path: "cmake-*"  # file or directory you want out
 
           - name: Debug directory in docker
             run: |
@@ -173,8 +173,8 @@ jobs:
               # docker build --target=foundation --output type=local,dest=$(pwd)/foundation/ .
               # docker exec -i localhost:5000/foundation:latest 'ls -laR'
               # docker run --rm -i localhost:5000/foundation:latest 'uname -a && pwd && ls -laRh && exit'
-              echo "Directory list:" && ls -laR && echo
-              echo "Directory /tmp list:" && ls -laRh /tmp && echo
+              # echo "Directory list:" && ls -laR && echo
+              # echo "Directory /tmp list:" && ls -laRh /tmp && echo
 
           - name: Upload a Build Artifact
             uses: actions/upload-artifact@v3.1.2
