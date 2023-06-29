@@ -306,7 +306,11 @@ jobs:
               
             - name: Debug registry list - before
               run: |
-                ls -lah /var/lib/docker-registry
+                if [ -d /var/lib/docker-registry ] ; then
+                  ls -lah /var/lib/docker-registry
+                else
+                  echo "Directory missing: /var/lib/docker-registry"
+                fi
               
             - name: Cache Docker registry
               id: cache-registry
