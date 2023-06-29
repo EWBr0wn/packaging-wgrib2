@@ -163,7 +163,7 @@ jobs:
             id: extract-cmake
             with:
               image: "localhost:5000/foundation"
-              path: "/var/task/cmake-*"  # file or directory you want out
+              path: "**/cmake-*"  # file or directory you want out
           
           - name: Upload cmake-cache artifact
             uses: actions/upload-artifact@v2
