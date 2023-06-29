@@ -145,7 +145,8 @@ jobs:
             - name: Debug directory in docker
               run: |
                 echo "Directory:" && pwd && echo
-                echo "Directory list:" && ls -laR && echo
+                docker run -it localhost:5000/foundation:latest 'ls -laR'
+                # echo "Directory list:" && ls -laR && echo
 
             - name: Upload a Build Artifact
               uses: actions/upload-artifact@v3.1.2
