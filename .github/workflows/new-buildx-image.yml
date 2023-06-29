@@ -137,7 +137,7 @@ jobs:
           - name: Debug docker
             #if: steps.cache-foundation.outputs.cache-hit != 'true'
             run: |
-              echo "Docker run:" && docker run -t --label foundation localhost:5000/foundation:latest "pwd" && echo
+              echo "Docker run:" && docker pull --label foundation localhost:5000/foundation && echo
               # echo "Docker ps output:" && docker ps -a && echo
               # echo "Docker buildx ls output:" && docker buildx ls && echo
               # echo "Docker images output:" && docker images --all && echo
@@ -159,12 +159,12 @@ jobs:
             run: |
               docker buildx imagetools inspect localhost:5000/foundation:latest
 
-          - name: Extract from Docker image
-            uses: shrink/actions-docker-extract@v2
-            id: extract-cmake
-            with:
-              image: "localhost:5000/foundation"
-              path: "**/cmake-*"  # file or directory you want out
+      #    - name: Extract from Docker image
+      #      uses: shrink/actions-docker-extract@v2
+      #      id: extract-cmake
+      #      with:
+      #        image: "localhost:5000/foundation"
+      #        path: "cmake-*"  # file or directory you want out
           
           - name: Upload cmake-cache artifact
             uses: actions/upload-artifact@v2
