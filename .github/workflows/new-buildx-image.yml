@@ -330,6 +330,15 @@ jobs:
                 pwd
                 echo "List current directory:" && ls -lah && echo
                 echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
+                echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
+                ls -lah /tmp/.buildx-cache*/{blobs,ingest}/sha256 && echo
+                echo "Diff buildx-cache directories:"
+                if [ -d /tmp/.buildx-cache-new ] ; then
+                  diff -r --brief /tmp/.buildx-cache /tmp/.buildx-cache-new
+                else
+                  echo
+                fi
+                df -h
           
             - name: Debug docker
               #if: steps.cache-foundation.outputs.cache-hit != 'true'
