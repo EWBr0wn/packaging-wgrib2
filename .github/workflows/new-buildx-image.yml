@@ -304,6 +304,10 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
               
+            - name: Debug registry list - before
+              run: |
+                ls -lah /var/lib/docker-registry
+              
             - name: Cache Docker registry
               id: cache-registry
               uses: actions/cache@v1.2.1
@@ -314,6 +318,10 @@ jobs:
                 key: ${{ runner.os }}-al2-registry-${{ github.job }}
                 restore-keys: |
                   ${{ runner.os }}-al2-registry
+            
+            - name: Debug registry list - after
+              run: |
+                ls -lah /var/lib/docker-registry
                   
             - name: Cache downloaded software
               uses: actions/cache@v1.2.1
