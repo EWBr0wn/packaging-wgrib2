@@ -95,7 +95,7 @@ jobs:
                 echo "List current directory:" && ls -lah && echo
                 echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
                 echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
-                ls -lah /tmp/.buildx-cache*/{blobs,ingest} && echo
+                ls -lah /tmp/.buildx-cache*/{blobs,ingest}/sha256 && echo
                 echo "Diff buildx-cache directories:"
                 if [ -d /tmp/.buildx-cache-new ] ; then
                   diff -r --brief /tmp/.buildx-cache /tmp/.buildx-cache-new
@@ -141,7 +141,7 @@ jobs:
                 echo "Docker buildx ls output:" && docker buildx ls && echo
                 echo "Docker images output:" && docker images --all && echo
                 echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
-                ls -lah /tmp/.buildx-cache*/{blobs,ingest} && echo
+                ls -lah /tmp/.buildx-cache*/{blobs,ingest}/sha256 && echo
                 echo "Diff buildx-cache directories:"
                 if [ -d /tmp/.buildx-cache-new ] ; then
                   diff -r --brief /tmp/.buildx-cache /tmp/.buildx-cache-new
@@ -161,8 +161,9 @@ jobs:
                 echo "Directory:" && pwd && echo
                 # Not what you want... rebuilding the image is not the correct answer
                 # docker buildx build --output type=docker,name=localhost:5000/foundation:latest .
-                docker build --target=foundation --output type=local,dest=$(pwd)/foundation/ .
-                # docker run -it localhost:5000/foundation:latest 'ls -laR'
+                # Again, Not what you want... rebuilding the image is not the correct answer
+                # docker build --target=foundation --output type=local,dest=$(pwd)/foundation/ .
+                docker exec -i localhost:5000/foundation:latest 'ls -laR'
                 echo "Directory list:" && ls -laR && echo
 
             - name: Upload a Build Artifact
