@@ -134,6 +134,9 @@ jobs:
                 echo "Docker buildx ls output:" && docker buildx ls && echo
                 echo "Docker images output:" && docker images --all && echo
                 echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
+                if [ -d /tmp/.buildx-cache-new ] ; then
+                  diff -r --brief /tmp/.buildx-cache /tmp/.buildx-cache-new
+                fi
                 
             - name: Move cache
               run: |
