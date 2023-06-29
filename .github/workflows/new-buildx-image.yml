@@ -165,12 +165,12 @@ jobs:
       #      with:
       #        image: "localhost:5000/foundation"
       #        path: "cmake-*"  # file or directory you want out
-          
-          - name: Upload cmake-cache artifact
-            uses: actions/upload-artifact@v2
-            with:
-              path: ${{ steps.extract-cmake.outputs.destination }}
-              name: cmake-cache
+      #    
+      #    - name: Upload cmake-cache artifact
+      #      uses: actions/upload-artifact@v2
+      #      with:
+      #        path: ${{ steps.extract-cmake.outputs.destination }}
+      #        name: cmake-cache
 
           - name: Debug directory in docker
             run: |
