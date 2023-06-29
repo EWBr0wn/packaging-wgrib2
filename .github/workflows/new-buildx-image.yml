@@ -159,7 +159,9 @@ jobs:
             - name: Debug directory in docker
               run: |
                 echo "Directory:" && pwd && echo
-                docker buildx build --output type=docker,name=localhost:5000/foundation:latest .
+                # Not what you want... rebuilding the image is not the correct answer
+                # docker buildx build --output type=docker,name=localhost:5000/foundation:latest .
+                docker build --target=foundation --output type=local,dest=$(pwd)/foundation/ .
                 # docker run -it localhost:5000/foundation:latest 'ls -laR'
                 echo "Directory list:" && ls -laR && echo
 
