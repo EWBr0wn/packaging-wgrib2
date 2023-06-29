@@ -95,6 +95,7 @@ jobs:
                 echo "List current directory:" && ls -lah && echo
                 echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
                 echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
+                ls -lah /tmp/.buildx-cache*/{blobs,ingest) && echo
                 echo "Diff buildx-cache directories:"
                 if [ -d /tmp/.buildx-cache-new ] ; then
                   diff -r --brief /tmp/.buildx-cache /tmp/.buildx-cache-new
@@ -140,6 +141,7 @@ jobs:
                 echo "Docker buildx ls output:" && docker buildx ls && echo
                 echo "Docker images output:" && docker images --all && echo
                 echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
+                ls -lah /tmp/.buildx-cache*/{blobs,ingest) && echo
                 echo "Diff buildx-cache directories:"
                 if [ -d /tmp/.buildx-cache-new ] ; then
                   diff -r --brief /tmp/.buildx-cache /tmp/.buildx-cache-new
