@@ -94,6 +94,7 @@ jobs:
                 pwd
                 echo "List current directory:" && ls -lah && echo
                 echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
+                echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
                 df -h
                 
             - name: Download cmake
@@ -132,6 +133,7 @@ jobs:
                 echo "Docker ps output:" && docker ps -a && echo
                 echo "Docker buildx ls output:" && docker buildx ls && echo
                 echo "Docker images output:" && docker images --all && echo
+                echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
                 
             - name: Move cache
               run: |
