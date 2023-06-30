@@ -377,6 +377,11 @@ jobs:
                 else
                   echo "Directory missing: /var/lib/docker-registry"
                 fi
+                
+            - name: String concat
+              if: 'false'
+              ## Gleaned from https://youtu.be/msCWg2F4sck?t=241
+              run: echo ${{ format('{0}/{1}', 'github.repository_owner', 'github.job') }}
                   
             - name: Cache downloaded software
               uses: actions/cache@v1.2.1
