@@ -172,9 +172,9 @@ jobs:
       #        path: ${{ steps.extract-cmake.outputs.destination }}
       #        name: cmake-cache
 
-          - name: Debug directory in docker
-            run: |
-              echo "Directory:" && pwd && echo
+      #    - name: Debug directory in docker
+      #      run: |
+      #        echo "Directory:" && pwd && echo
               # Not what you want... rebuilding the image is not the correct answer
               # docker buildx build --output type=docker,name=localhost:5000/foundation:latest .
               # Again, Not what you want... rebuilding the image is not the correct answer
@@ -374,7 +374,7 @@ jobs:
                 df -h
           
             - name: Debug docker
-              #if: steps.cache-foundation.outputs.cache-hit != 'true'
+              if: 'false'
               run: |
                 echo "Docker ps output:" && docker ps -a && echo
                 echo "Docker buildx ls output:" && docker buildx ls && echo
@@ -384,9 +384,12 @@ jobs:
             - name: Download wgrib2
               #if: steps.cache-builder.outputs.cache-hit != 'true'
               run: |
-                make 3rd-party/wgrib2.tgz
+                if [ ! -f 3rd-party/wgrib2.tgz ] ; then
+                  make 3rd-party/wgrib2.tgz
+                fi
 
             - name: Inspect foundation
+              if: 'false'
               run: |
                 docker buildx imagetools inspect localhost:5000/foundation:latest
                 
