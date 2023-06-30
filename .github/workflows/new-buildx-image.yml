@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+## Gleaned from https://yonatankra.com/7-github-actions-tricks-i-wish-i-knew-before-i-started/#6_Saving_Computation_Time_by_Stopping_Obsolete_Workflows
+concurrency:
+  group: ci-tests-${{ github.ref }}-1
+  cancel-in-progress: true
+
 jobs:
     ## Gleaned from https://docs.docker.com/build/ci/github-actions/local-registry/
     docker-registry:
