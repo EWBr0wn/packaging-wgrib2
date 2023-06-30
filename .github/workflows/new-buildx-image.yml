@@ -102,7 +102,12 @@ jobs:
               else
                 echo
               fi
-              find / -type d -name '*docker-registry*' -o -name var 2>/dev/null
+              echo "Find on /mnt:" 
+              find /mnt -xdev -type d -name '*docker-registry*' 2>/dev/null
+              echo
+              echo "Find only on /:"
+              find / -xdev -type d -name '*docker-registry*' -o -name var 2>/dev/null
+              echo
               df -h
                 
           - name: Download cmake
