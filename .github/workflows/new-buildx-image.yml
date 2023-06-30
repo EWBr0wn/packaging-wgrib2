@@ -27,8 +27,8 @@ jobs:
           uses: actions/checkout@v3
           
         - name: debug
-            run: |
-              echo "List /var/lib directory:" && ls -lah /var/lib && echo
+          run: |
+            echo "List /var/lib directory:" && ls -lah /var/lib && echo
               
         - name: Cache Docker registry
           id: cache-registry
