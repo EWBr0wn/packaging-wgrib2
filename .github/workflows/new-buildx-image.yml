@@ -118,6 +118,7 @@ jobs:
               df -h
                 
           - name: Build foundation image
+            if: 'false'
             uses: docker/build-push-action@v4.1.1
             with:
               context: .
@@ -133,7 +134,25 @@ jobs:
               # More: https://github.com/moby/buildkit#--export-cache-options
               # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
               cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-                
+
+          ## Gleaned from https://www.hyperdx.io/blog/docker-buildx-cache-with-github-actions
+          - name: Build foundation image
+            uses: docker/build-push-action@v4.1.1
+            with:
+              context: .
+              builder: ${{ steps.buildx.outputs.name }}
+              file: Dockerfile
+              # Set the desired build target here
+              target: foundation
+              push: true
+              tags: localhost:5000/foundation:latest
+              #tags: ${{ steps.prep.outputs.tagged_image }}
+              cache-from: type=gha
+              # Note the mode=max here
+              # More: https://github.com/moby/buildkit#--export-cache-options
+              # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+              cache-to: type=gha,mode=max
+
           - name: Debug docker
             #if: steps.cache-foundation.outputs.cache-hit != 'true'
             run: |
