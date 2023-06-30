@@ -34,7 +34,8 @@ jobs:
         - name: debug
           if: 'true'
           run: |
-            echo "List /var/lib/docker directory:" && ls -lah /var/lib/docker && echo
+            whoami
+            echo "List /var/lib/docker directory:" && sudo ls -lah /var/lib/docker && echo
               
         - name: Cache Docker registry
           id: cache-registry
