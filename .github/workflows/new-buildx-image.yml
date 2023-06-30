@@ -107,7 +107,9 @@ jobs:
           - name: Download cmake
             #if: steps.cache-foundation.outputs.cache-hit != 'true'
             run: |
-              make 3rd-party/cmake.tgz
+              if [ ! -f 3rd-party/cmake.tgz ] ; then
+                make 3rd-party/cmake.tgz
+              fi
             
           - name: debug
             #if: steps.cache-foundation.outputs.cache-hit != 'true'
@@ -170,6 +172,7 @@ jobs:
               fi
                 
           - name: Move cache
+            if: 'false'
             run: |
               rm -rf /tmp/.buildx-cache
               mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -278,6 +281,7 @@ jobs:
                 # echo "Docker buildx ls output:" && docker buildx ls && echo
 
             - name: Build lambda-base image
+              if: 'false'
               uses: docker/build-push-action@v4.1.1
               with:
                 context: .
@@ -293,6 +297,23 @@ jobs:
                 # More: https://github.com/moby/buildkit#--export-cache-options
                 # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
                 cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+            
+            - name: Build lambda-base image
+              uses: docker/build-push-action@v4.1.1
+              with:
+                context: .
+                builder: ${{ steps.buildx.outputs.name }}
+                file: Dockerfile
+                # Set the desired build target here
+                target: lambda-base
+                push: true
+                tags: localhost:5000/lambda-base:latest
+                # tags: ${{ steps.prep.outputs.tagged_image }}
+                cache-from: type=gha
+                # Note the mode=max here
+                # More: https://github.com/moby/buildkit#--export-cache-options
+                # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+                cache-to: type=gha,mode=max
 
             - name: Debug docker
               #if: steps.cache-foundation.outputs.cache-hit != 'true'
@@ -302,6 +323,7 @@ jobs:
                 echo "Docker images output:" && docker images --all && echo
                 
             - name: Move cache
+              if: 'false'
               run: |
                 rm -rf /tmp/.buildx-cache
                 mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -413,6 +435,7 @@ jobs:
                 docker buildx imagetools inspect localhost:5000/foundation:latest
                 
             - name: Build builder image
+              if: 'false'
               uses: docker/build-push-action@v4.1.1
               with:
                 context: .
@@ -428,6 +451,23 @@ jobs:
                 # More: https://github.com/moby/buildkit#--export-cache-options
                 # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
                 cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+                
+            - name: Build builder image
+              uses: docker/build-push-action@v4.1.1
+              with:
+                context: .
+                builder: ${{ steps.buildx.outputs.name }}
+                file: Dockerfile
+                # Set the desired build target here
+                target: builder
+                push: true
+                tags: localhost:5000/builder:latest
+                #tags: ${{ steps.prep.outputs.tagged_image }}
+                cache-from: type=gha
+                # Note the mode=max here
+                # More: https://github.com/moby/buildkit#--export-cache-options
+                # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+                cache-to: type=gha,mode=max
 
             - name: Debug docker
               #if: steps.cache-foundation.outputs.cache-hit != 'true'
@@ -437,6 +477,7 @@ jobs:
                 echo "Docker images output:" && docker images --all && echo
                 
             - name: Move cache
+              if: 'false'
               run: |
                 rm -rf /tmp/.buildx-cache
                 mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
