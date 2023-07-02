@@ -393,11 +393,12 @@ jobs:
             - name: String concat
               if: 'true'
               ## Gleaned from https://youtu.be/msCWg2F4sck?t=241
-              run: echo ${{ format('{0}/{1}', 'github.repository_owner', 'github.job') }}
+              run: echo ${{ format('{0}/{1}', github.repository_owner, github.job) }}
               
             ## Gleaned from https://www.actionsbyexample.com/context-expressions.html
-            -  name: To JSON
-               run: echo 'Job context is ${{ toJSON(job) }}'
+            - name: To JSON
+              if: 'false'
+              run: echo 'Job context is ${{ toJSON(job) }}'
             #-  name: From JSON
             #   env: ${{ fromJSON('{"FAVORITE_FRUIT": "APPLE", "FAVORITE_COLOR": "BLUE"}') }}
             #   run: echo "I would like a ${FAVORITE_COLOR} ${FAVORITE_FRUIT}"
