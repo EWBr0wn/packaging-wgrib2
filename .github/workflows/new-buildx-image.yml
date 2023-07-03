@@ -551,7 +551,7 @@ jobs:
           echo "docker buildx imagetools inspect localhost:5000/foundation:latest"
           docker buildx build -t foundation:latest --pull \
             --output=type=docker --cache-from=type=local,src=/tmp/.buildx-cache \
-            --progress plain docker
+            --progress plain
           
       - name: Download wgrib2
         #if: steps.cache-builder.outputs.cache-hit != 'true'
