@@ -27,6 +27,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
+        volumes:
+          - /var/lib/docker-registry:/var/lib/docker
     steps:
       - name: Checkout
         uses: actions/checkout@v3
