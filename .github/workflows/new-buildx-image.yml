@@ -93,7 +93,7 @@ jobs:
           
       - name: Push
         run: |
-          docker image push locahost:5000/hello-world:latest
+          docker image push localhost:5000/hello-world:latest
           
       - name: Save
         run: |
