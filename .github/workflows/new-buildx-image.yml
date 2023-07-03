@@ -81,6 +81,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-al2-buildx
             
+      - name: Inspect lambda-base
+        run: |
+          docker buildx imagetools inspect hello-world:latest
+          
       - name: Pull
         run: |
           docker pull hello-world
