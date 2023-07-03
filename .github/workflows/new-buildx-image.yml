@@ -72,7 +72,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-al2-buildx
             
-      - name: Inspect lambda-base
+      - name: Inspect hello-world
         run: |
           docker buildx imagetools inspect hello-world:latest
           
@@ -452,6 +452,7 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Debug registry list - before
+        if: 'false'
         run: |
           if [ -d /var/lib/docker-registry ] ; then
             ls -lah /var/lib/docker-registry
@@ -460,6 +461,7 @@ jobs:
           fi
         
       - name: Cache Docker registry
+        if: 'false'
         id: cache-registry
         uses: actions/cache@v1.2.1
         with:
@@ -471,6 +473,7 @@ jobs:
             ${{ runner.os }}-al2-registry
       
       - name: Debug registry list - after
+        if: 'false'
         run: |
           if [ -d /var/lib/docker-registry ] ; then
             ls -lah /var/lib/docker-registry
@@ -519,6 +522,7 @@ jobs:
             ${{ runner.os }}-al2-buildx
                           
       - name: debug
+        if: 'false'
         run: |
           pwd
           echo "List current directory:" && ls -lah && echo
@@ -540,6 +544,14 @@ jobs:
           echo "Docker buildx ls output:" && docker buildx ls && echo
           echo "Docker images output:" && docker images --all && echo
           echo "Docker run:" && docker pull localhost:5000/foundation && echo
+      
+      ## Gleaned from https://github.com/docker/buildx/issues/1370
+      - name: Inspect foundation
+        run: |
+          echo "docker buildx imagetools inspect localhost:5000/foundation:latest"
+          docker buildx build -t foundation:latest --pull \
+            --output=type=docker --cache-from=type=local,src=/tmp/.buildx-cache \
+            --progress plain docker
           
       - name: Download wgrib2
         #if: steps.cache-builder.outputs.cache-hit != 'true'
