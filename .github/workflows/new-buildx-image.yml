@@ -47,6 +47,85 @@ jobs:
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-registry
+            
+  fetch-test:
+    runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+        volumes:
+          - /tmp/.buildx-cache:/var/lib/docker
+    needs: 
+      - docker-registry
+    steps:
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.8.0
+        with:
+          driver-opts: network=host
+          buildkitd-flags: --debug
+
+      - name: Cache Docker layers
+        id: cache-foundation
+        uses: actions/cache@v1.2.1
+        with:
+          path: |
+            /tmp/.buildx-cache
+          # Key is named differently to avoid collision
+          key: ${{ runner.os }}-al2-buildx-${{ github.job }}
+          restore-keys: |
+            ${{ runner.os }}-al2-buildx
+            
+      - name: Fetch
+        run: |
+          docker pull hello-world
+          docker image tag hello-world:latest localhost:5000/hello-world:latest
+          docker image push locahost:5000/hello-world:latest
+          
+      - name: Save
+        run: |
+          docker save hello-world > hello-world.tar
+          ls -lh
+          
+  fetch-check:
+    runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+        volumes:
+          - /tmp/.buildx-cache:/var/lib/docker
+    needs: 
+      - fetch-test
+    steps:
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.8.0
+        with:
+          #driver-opts: network=host
+          buildkitd-flags: --debug
+
+      - name: Cache Docker layers
+        id: cache-foundation
+        uses: actions/cache@v1.2.1
+        with:
+          path: |
+            /tmp/.buildx-cache
+          # Key is named differently to avoid collision
+          key: ${{ runner.os }}-al2-buildx-${{ github.job }}
+          restore-keys: |
+            ${{ runner.os }}-al2-buildx
+            
+      - name: Fetch
+        run: |
+          docker pull hello-world
+          
+      - name: Stop flow
+        run: |
+          exit 1
 
   foundation:
     runs-on: ubuntu-latest
@@ -57,6 +136,8 @@ jobs:
           - 5000:5000
     needs: 
       - docker-registry
+      - fetch-test
+      - fetch-check
     steps:
       - name: Checkout
         uses: actions/checkout@v3
