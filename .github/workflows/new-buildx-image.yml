@@ -83,12 +83,6 @@ jobs:
         run: |
           docker pull hello-world
           
-      - name: Fetch
-        run: |
-          docker pull hello-world
-          docker image tag hello-world:latest localhost:5000/hello-world:latest
-          docker image push locahost:5000/hello-world:latest
-          
       - name: Tag
         run: |
           docker image tag hello-world:latest localhost:5000/hello-world:latest
