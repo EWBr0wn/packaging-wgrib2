@@ -87,6 +87,10 @@ jobs:
         run: |
           docker image tag hello-world:latest localhost:5000/hello-world:latest
           
+      - name: List 
+        run: |
+          docker image ls
+          
       - name: Push
         run: |
           docker image push locahost:5000/hello-world:latest
