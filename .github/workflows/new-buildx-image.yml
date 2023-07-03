@@ -128,6 +128,12 @@ jobs:
               if [ ! -f 3rd-party/cmake.tgz ] ; then
                 make 3rd-party/cmake.tgz
               fi
+              
+          - name: Upload cmake.tgz
+            uses: actions/upload-artifact@v2
+            with:
+              name: cached-cmake.tgz
+              path: 3rd-party/cmake.tgz
             
           - name: debug
             #if: steps.cache-foundation.outputs.cache-hit != 'true'
