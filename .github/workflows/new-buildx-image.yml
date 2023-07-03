@@ -27,19 +27,12 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-          - /var/lib/docker-registry:/var/lib/docker
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
-      - name: debug
-        if: 'true'
-        run: |
-          whoami
-          echo "List /var/lib/docker directory:" && sudo ls -lah /var/lib/docker/ && echo
             
       - name: Cache Docker registry
+        if: 'false'
         id: cache-registry
         uses: actions/cache@v1.2.1
         with:
@@ -57,8 +50,6 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-          - /tmp/.buildx-cache:/var/lib/docker
     needs: 
       - docker-registry
     steps:
@@ -113,8 +104,6 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-          - /tmp/.buildx-cache:/var/lib/docker
     needs: 
       - fetch-test
     steps:
@@ -212,12 +201,6 @@ jobs:
           else
             echo
           fi
-          # echo "Find on /mnt:" 
-          # find /mnt -xdev -type d -name '*docker-registry*' 2>/dev/null
-          # echo
-          # echo "Find only on /:"
-          # find / -xdev -type d -name '*docker-registry*' -o -name var 2>/dev/null
-          # echo
           df -h
             
       - name: Download cmake
@@ -242,7 +225,7 @@ jobs:
           df -h
             
       - name: Build foundation image
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -261,6 +244,7 @@ jobs:
 
       ## Gleaned from https://www.hyperdx.io/blog/docker-buildx-cache-with-github-actions
       - name: Build foundation image
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
