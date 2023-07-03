@@ -130,6 +130,7 @@ jobs:
           docker pull hello-world
           
       - name: Stop flow
+        if: 'false'
         run: |
           exit 1
 
