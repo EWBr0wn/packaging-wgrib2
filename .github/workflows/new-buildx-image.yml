@@ -554,7 +554,7 @@ jobs:
           docker buildx imagetools inspect localhost:5000/foundation:latest
           
       - name: Build builder image
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -572,6 +572,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           
       - name: Build builder image
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
