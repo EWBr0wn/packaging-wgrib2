@@ -530,7 +530,7 @@ jobs:
           driver-opts: network=host
           
       - name: Download artifact
-        uses: actions/download-artifact@v3.1.2
+        uses: actions/download-artifact@v2.1.1
         with:
           name: foundation
           path: /tmp
