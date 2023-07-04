@@ -722,14 +722,17 @@ jobs:
             mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
                   
         - name: Inspect foundation
+          if: 'false'
           run: |
             docker buildx imagetools inspect localhost:5000/foundation:latest
         
         - name: Inspect lambda-base
+          if: 'false'
           run: |
             docker buildx imagetools inspect localhost:5000/lambda-base:latest
 
         - name: Inspect builder
+          if: 'false'
           run: |
             docker buildx imagetools inspect localhost:5000/builder:latest
             
@@ -771,6 +774,12 @@ jobs:
             restore-keys: |
               ${{ runner.os }}-al2-3rd-party
               
+        - name: Download artifact
+          uses: actions/download-artifact@v2.1.1
+          with:
+            name: builder
+            path: /tmp
+              
         - name: Setup Docker Buildx
           id: buildx
           uses: docker/setup-buildx-action@v2.7.0
@@ -788,6 +797,14 @@ jobs:
             restore-keys: |
               ${{ runner.os }}-al2-buildx
 
+        - name: Load image - builder
+          run: |
+            gzip -dv /tmp/builder.tar.gz
+            docker load --input /tmp/builder.tar
+            docker image ls -a
+            docker image tag builder:latest localhost:5000/builder:latest
+            docker image push localhost:5000/builder:latest
+        
         - name: Download pywgrib2_s.py
           run: |
             make 3rd-party/pywgrib2_s.py
@@ -809,7 +826,7 @@ jobs:
             # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
             cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
             build-contexts: |
-              lambda-base=docker-image://localhost:5000/lambda-base:latest
+              builder=docker-image://localhost:5000/builder:latest
 
         - name: Move cache
           run: |
