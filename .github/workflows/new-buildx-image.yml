@@ -556,12 +556,21 @@ jobs:
           # Set the desired build target here
           target: builder
           tags: builder:latest
-          cache-from: type=local,src=/tmp/.buildx-cache-new
           outputs: type=docker,dest=/tmp/builder.tar
+          build-contexts: |
+            foundation=docker-image://localhost:5000/foundation:latest
+          
+      - name: List builder.tar - before
+        run: |
+          ls -lh /tmp/builder.tar
           
       - name: Compress builder.tar
         run: |
           gzip -9v /tmp/builder.tar
+          
+      - name: List builder.tar - after
+        run: |
+          ls -lh /tmp/builder.tar
           
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
