@@ -556,6 +556,7 @@ jobs:
           # Set the desired build target here
           target: builder
           tags: builder:latest
+          cache-from: type=local,src=/tmp/.buildx-cache-new
           outputs: type=docker,dest=/tmp/builder.tar
           
       - name: Compress builder.tar
