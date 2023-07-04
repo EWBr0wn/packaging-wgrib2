@@ -285,7 +285,8 @@ jobs:
         
       - name: Inspect foundation
         run: |
-          docker buildx imagetools inspect localhost:5000/foundation:latest
+          # docker buildx imagetools inspect localhost:5000/foundation:latest
+          docker buildx imagetools inspect foundation
       
   #    - name: Extract from Docker image
   #      uses: shrink/actions-docker-extract@v2
