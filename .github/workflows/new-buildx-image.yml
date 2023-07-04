@@ -126,7 +126,7 @@ jobs:
           path: 3rd-party/cmake.tgz
         
       - name: debug
-        if: 'false'
+        if: 'true'
         run: |
           pwd
           echo "List current directory:" && ls -lah && echo
@@ -445,6 +445,7 @@ jobs:
       #   run: echo "I would like a ${FAVORITE_COLOR} ${FAVORITE_FRUIT}"
             
       - name: Cache downloaded software
+        id: cache-3rd-party
         uses: actions/cache@v1.2.1
         with:
           path: |
@@ -645,6 +646,7 @@ jobs:
               ${{ runner.os }}-al2-registry
               
         - name: Cache downloaded software
+          id: cache-3rd-party
           uses: actions/cache@v1.2.1
           with:
             path: |
@@ -767,6 +769,7 @@ jobs:
               ${{ runner.os }}-al2-registry
               
         - name: Cache downloaded software
+          id: cache-3rd-party
           uses: actions/cache@v1.2.1
           with:
             path: |
