@@ -301,6 +301,7 @@ jobs:
           mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
         
       - name: Inspect foundation
+        if: 'false'
         run: |
           # docker buildx imagetools inspect localhost:5000/foundation:latest
           docker buildx imagetools inspect foundation
