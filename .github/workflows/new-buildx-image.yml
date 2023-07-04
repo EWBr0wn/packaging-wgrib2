@@ -235,13 +235,30 @@ jobs:
           # Set the desired build target here
           target: foundation
           push: true
-          tags: foundation
+          tags: localhost:5000/foundation:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=/tmp/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+          
+      - name: Build and export
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: foundation
+          tags: foundation:latest
+          outputs: type=docker,dest=/tmp/foundation.tar
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: foundation
+          path: /tmp/foundation.tar
 
       ## Gleaned from https://www.hyperdx.io/blog/docker-buildx-cache-with-github-actions
       - name: Build foundation image
@@ -510,6 +527,12 @@ jobs:
         uses: docker/setup-buildx-action@v2.7.0
         with:
           driver-opts: network=host
+          
+      - name: Download artifact
+        uses: actions/download-artifact@v3.1.2
+        with:
+          name: foundation
+          path: /tmp
 
       - name: Cache Docker layers
         id: cache-builder
@@ -521,6 +544,11 @@ jobs:
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-buildx
+            
+      - name: Load image
+        run: |
+          docker load --input /tmp/foundation.tar
+          docker image ls -a
                           
       - name: debug
         if: 'false'
@@ -548,6 +576,7 @@ jobs:
       
       ## Gleaned from https://github.com/docker/buildx/issues/1370
       - name: Inspect foundation
+        if: 'false'
         run: |
           echo "docker buildx imagetools inspect localhost:5000/foundation:latest"
           docker buildx build -t foundation:latest --pull \
