@@ -570,7 +570,7 @@ jobs:
           
       - name: List builder.tar - after
         run: |
-          ls -lh /tmp/builder.tar
+          ls -lh /tmp/builder.tar.gz
           
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
