@@ -550,6 +550,8 @@ jobs:
         run: |
           docker load --input /tmp/foundation.tar
           docker image ls -a
+          docker image tag foundation:latest localhost:5000/foundation:latest
+          docker image push localhost:5000/foundation:latest
                           
       - name: debug
         if: 'false'
@@ -613,6 +615,8 @@ jobs:
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+          build-contexts: |
+            foundation=docker-image://localhost:5000/foundation:latest
           
       - name: Build builder image
         if: 'false'
