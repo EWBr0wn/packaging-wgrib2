@@ -68,6 +68,7 @@ jobs:
             ${{ runner.os }}-al2-registry
               
       - name: Cache downloaded software
+        id: cache-3rd-party
         uses: actions/cache@v1.2.1
         with:
           path: |
@@ -112,6 +113,7 @@ jobs:
           df -h
             
       - name: Download cmake
+        if: steps.cache-3rd-party.outputs.cache-hit != 'true'
         run: |
           if [ ! -f 3rd-party/cmake.tgz ] ; then
             make 3rd-party/cmake.tgz
@@ -202,7 +204,7 @@ jobs:
           fi
             
       - name: Move cache
-        if: 'false'
+        if: 'true'
         run: |
           rm -rf /tmp/.buildx-cache
           mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -280,6 +282,7 @@ jobs:
             ${{ runner.os }}-al2-registry
             
       - name: Cache downloaded software
+        id: cache-3rd-party
         uses: actions/cache@v1.2.1
         with:
           path: |
@@ -307,7 +310,6 @@ jobs:
             ${{ runner.os }}-al2-buildx
             
       - name: Debug docker
-        #if: steps.cache-foundation.outputs.cache-hit != 'true'
         run: |
           echo "Docker ps output:" && docker ps -a && echo
           # echo "Docker buildx ls output:" && docker buildx ls && echo
@@ -377,7 +379,7 @@ jobs:
           echo "Docker images output:" && docker images --all && echo
           
       - name: Move cache
-        if: 'false'
+        if: 'true'
         run: |
           rm -rf /tmp/.buildx-cache
           mv -v /tmp/.buildx-cache-new /tmp/.buildx-cache
