@@ -329,6 +329,27 @@ jobs:
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+          
+      - name: Build and export
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-base
+          tags: lambda-base:latest
+          outputs: type=docker,dest=/tmp/lambda-base.tar
+          
+      - name: Compress lambda-base.tar
+        run: |
+          gzip -9v /tmp/lambda-base.tar
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: lambda-base
+          path: /tmp/lambda-base.tar.gz
       
       - name: Build lambda-base image
         if: 'false'
@@ -525,6 +546,27 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           build-contexts: |
             foundation=docker-image://localhost:5000/foundation:latest
+            
+      - name: Build and export
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: builder
+          tags: builder:latest
+          outputs: type=docker,dest=/tmp/builder.tar
+          
+      - name: Compress builder.tar
+        run: |
+          gzip -9v /tmp/builder.tar
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: builder
+          path: /tmp/builder.tar.gz
           
       - name: Build builder image
         if: 'false'
@@ -600,6 +642,18 @@ jobs:
             restore-keys: |
               ${{ runner.os }}-al2-3rd-party
               
+        - name: Download artifact
+          uses: actions/download-artifact@v2.1.1
+          with:
+            name: lambda-base
+            path: /tmp
+            
+        - name: Download artifact
+          uses: actions/download-artifact@v2.1.1
+          with:
+            name: builder
+            path: /tmp
+              
         - name: Setup Docker Buildx
           id: buildx
           uses: docker/setup-buildx-action@v2.7.0
@@ -615,6 +669,22 @@ jobs:
             key: ${{ runner.os }}-al2-buildx-${{ github.job }}
             restore-keys: |
               ${{ runner.os }}-al2-buildx
+              
+        - name: Load image - lambda-base
+          run: |
+            gzip -dv /tmp/lambda-base.tar.gz
+            docker load --input /tmp/lambda-base.tar
+            docker image ls -a
+            docker image tag lambda-base:latest localhost:5000/lambda-base:latest
+            docker image push localhost:5000/lambda-base:latest
+            
+        - name: Load image - builder
+          run: |
+            gzip -dv /tmp/builder.tar.gz
+            docker load --input /tmp/builder.tar
+            docker image ls -a
+            docker image tag builder:latest localhost:5000/builder:latest
+            docker image push localhost:5000/builder:latest
 
         - name: Build lambda-wgrib2 image
           uses: docker/build-push-action@v4.1.1
@@ -632,6 +702,9 @@ jobs:
             # More: https://github.com/moby/buildkit#--export-cache-options
             # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
             cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+            build-contexts: |
+              builder=docker-image://localhost:5000/lambda-base:latest
+              builder=docker-image://localhost:5000/builder:latest
 
         - name: Move cache
           run: |
@@ -725,6 +798,8 @@ jobs:
             # More: https://github.com/moby/buildkit#--export-cache-options
             # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
             cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+            build-contexts: |
+              lambda-base=docker-image://localhost:5000/lambda-base:latest
 
         - name: Move cache
           run: |
