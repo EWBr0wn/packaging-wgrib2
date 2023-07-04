@@ -43,97 +43,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-al2-registry
             
-  fetch-test:
-    runs-on: ubuntu-latest
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
-    needs: 
-      - docker-registry
-    steps:
-      - name: Setup Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2.8.0
-        with:
-          driver-opts: network=host
-          buildkitd-flags: --debug
-
-      - name: Cache Docker layers
-        if: 'false'
-        id: cache-foundation
-        uses: actions/cache@v1.2.1
-        with:
-          path: |
-            /tmp/.buildx-cache
-          # Key is named differently to avoid collision
-          key: ${{ runner.os }}-al2-buildx-${{ github.job }}
-          restore-keys: |
-            ${{ runner.os }}-al2-buildx
-            
-      - name: Inspect hello-world
-        run: |
-          docker buildx imagetools inspect hello-world:latest
-          
-      - name: Pull
-        run: |
-          docker pull hello-world
-          
-      - name: Tag
-        run: |
-          docker image tag hello-world:latest localhost:5000/hello-world:latest
-          
-      - name: List 
-        run: |
-          docker image ls
-          
-      - name: Push
-        run: |
-          docker image push localhost:5000/hello-world:latest
-          
-      - name: Save
-        run: |
-          docker save hello-world > hello-world.tar
-          ls -lh
-          
-  fetch-check:
-    runs-on: ubuntu-latest
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
-    needs: 
-      - fetch-test
-    steps:
-      - name: Setup Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2.8.0
-        with:
-          #driver-opts: network=host
-          buildkitd-flags: --debug
-
-      - name: Cache Docker layers
-        id: cache-foundation
-        uses: actions/cache@v1.2.1
-        with:
-          path: |
-            /tmp/.buildx-cache
-          # Key is named differently to avoid collision
-          key: ${{ runner.os }}-al2-buildx-${{ github.job }}
-          restore-keys: |
-            ${{ runner.os }}-al2-buildx
-            
-      - name: Fetch
-        run: |
-          docker pull hello-world
-          
-      - name: Stop flow
-        if: 'false'
-        run: |
-          exit 1
-
   foundation:
     runs-on: ubuntu-latest
     services:
@@ -143,8 +52,6 @@ jobs:
           - 5000:5000
     needs: 
       - docker-registry
-  #    - fetch-test
-  #    - fetch-check
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -189,7 +96,7 @@ jobs:
             ${{ runner.os }}-al2-buildx
               
       - name: debug
-        #if: steps.cache-foundation.outputs.cache-hit != 'true'
+        if: 'false'
         run: |
           echo "Current directory:" && pwd && echo
           echo "List current directory:" && ls -lah && echo
@@ -205,7 +112,6 @@ jobs:
           df -h
             
       - name: Download cmake
-        #if: steps.cache-foundation.outputs.cache-hit != 'true'
         run: |
           if [ ! -f 3rd-party/cmake.tgz ] ; then
             make 3rd-party/cmake.tgz
@@ -218,7 +124,7 @@ jobs:
           path: 3rd-party/cmake.tgz
         
       - name: debug
-        #if: steps.cache-foundation.outputs.cache-hit != 'true'
+        if: 'false'
         run: |
           pwd
           echo "List current directory:" && ls -lah && echo
@@ -280,6 +186,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Debug docker
+        if: 'false'
         run: |
           ## echo "Docker run:" && docker pull --label foundation localhost:5000/foundation && echo
           # echo "Docker ps output:" && docker ps -a && echo
@@ -406,7 +313,7 @@ jobs:
           # echo "Docker buildx ls output:" && docker buildx ls && echo
 
       - name: Build lambda-base image
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -424,6 +331,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
       
       - name: Build lambda-base image
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -441,7 +349,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Debug docker
-        #if: steps.cache-foundation.outputs.cache-hit != 'true'
+        if: 'false'
         run: |
           # echo "Docker ps output:" && docker ps -a && echo
           # echo "Docker buildx ls output:" && docker buildx ls && echo
@@ -501,7 +409,7 @@ jobs:
           fi
           
       - name: String concat
-        if: 'true'
+        if: 'false'
         ## Gleaned from https://youtu.be/msCWg2F4sck?t=241
         run: echo ${{ format('{0}/{1}', github.repository_owner, github.job) }}
         
@@ -637,7 +545,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Debug docker
-        #if: steps.cache-foundation.outputs.cache-hit != 'true'
+        if: 'false'
         run: |
           echo "Docker ps output:" && docker ps -a && echo
           echo "Docker buildx ls output:" && docker buildx ls && echo
@@ -798,7 +706,6 @@ jobs:
               ${{ runner.os }}-al2-buildx
 
         - name: Download pywgrib2_s.py
-          #if: steps.cache-builder.outputs.cache-hit != 'true'
           run: |
             make 3rd-party/pywgrib2_s.py
 
