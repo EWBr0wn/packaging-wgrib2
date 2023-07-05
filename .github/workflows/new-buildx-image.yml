@@ -27,17 +27,19 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
+        volumes:
+          - /tmp/docker-registry:/var/lib/registry
     steps:
       - name: Checkout
         uses: actions/checkout@v3
             
       - name: Cache Docker registry
-        if: 'false'
+        if: 'true'
         id: cache-registry
         uses: actions/cache@v1.2.1
         with:
           path: |
-            /var/lib/docker-registry
+            /tmp/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
