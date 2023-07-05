@@ -52,6 +52,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
+        volumes:
+          - /tmp/docker-registry:/var/lib/registry
     needs: 
       - docker-registry
     steps:
@@ -63,7 +65,7 @@ jobs:
         uses: actions/cache@v1.2.1
         with:
           path: |
-            /var/lib/docker-registry
+            /tmp/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -266,6 +268,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
+        volumes:
+          - /tmp/docker-registry:/var/lib/registry
     needs: 
         - docker-registry
     steps:
@@ -277,7 +281,7 @@ jobs:
         uses: actions/cache@v1.2.1
         with:
           path: |
-            /var/lib/docker-registry
+            /tmp/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -397,6 +401,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
+        volumes:
+          - /tmp/docker-registry:/var/lib/registry
     needs: 
         - foundation
     steps:
@@ -413,12 +419,12 @@ jobs:
           fi
         
       - name: Cache Docker registry
-        if: 'false'
+        if: 'true'
         id: cache-registry
         uses: actions/cache@v1.2.1
         with:
           path: |
-            /var/lib/docker-registry
+            /tmp/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -629,6 +635,8 @@ jobs:
           image: registry:2
           ports:
             - 5000:5000
+          volumes:
+          - /tmp/docker-registry:/var/lib/registry
       needs:
           - lambda-base
           - builder
@@ -641,7 +649,7 @@ jobs:
           uses: actions/cache@v1.2.1
           with:
             path: |
-              /var/lib/docker-registry
+              /tmp/docker-registry
             # Key is named differently to avoid collision
             key: ${{ runner.os }}-al2-registry-${{ github.job }}
             restore-keys: |
@@ -753,6 +761,8 @@ jobs:
           image: registry:2
           ports:
             - 5000:5000
+          volumes:
+          - /tmp/docker-registry:/var/lib/registry
       needs:
           - builder
       steps:
@@ -764,7 +774,7 @@ jobs:
           uses: actions/cache@v1.2.1
           with:
             path: |
-              /var/lib/docker-registry
+              /tmp/docker-registry
             # Key is named differently to avoid collision
             key: ${{ runner.os }}-al2-registry-${{ github.job }}
             restore-keys: |
