@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - refactor-docker-build  
     paths-ignore:
       - .github/workflows/*.yml
   pull_request:
@@ -28,7 +27,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - /tmp/docker-registry:/var/lib/registry
+          - ${{ github.workspace }}/tmp/docker-registry:/var/lib/registry
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,7 +38,7 @@ jobs:
         uses: actions/cache@v1.2.1
         with:
           path: |
-            /tmp/docker-registry
+            ${{ github.workspace }}/tmp/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -53,7 +52,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - /tmp/docker-registry:/var/lib/registry
+          - ${{ github.workspace }}/tmp/docker-registry:/var/lib/registry
     needs: 
       - docker-registry
     steps:
@@ -65,7 +64,7 @@ jobs:
         uses: actions/cache@v1.2.1
         with:
           path: |
-            /tmp/docker-registry
+            ${{ github.workspace }}/tmp/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
