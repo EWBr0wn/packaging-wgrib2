@@ -556,6 +556,7 @@ jobs:
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+          ## Gleaned from https://docs.docker.com/build/ci/github-actions/named-contexts/
           build-contexts: |
             foundation=docker-image://localhost:5000/foundation:latest
             
