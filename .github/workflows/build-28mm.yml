@@ -36,7 +36,7 @@ jobs:
             make 3rd-party/wgrib2.tgz
           fi
           
-      - name: Build builder image
+      - name: Build 28mm-wgrib2 image
         if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
