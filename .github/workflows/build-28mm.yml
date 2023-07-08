@@ -43,7 +43,5 @@ jobs:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
           file: Dockerfile
-          # Set the desired build target here
-          target: 28mm-wgrib2
           push: false
           tags: 28mm-wgrib2
