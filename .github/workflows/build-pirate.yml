@@ -29,12 +29,6 @@ jobs:
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2.7.0
-        
-      - name: Download wgrib2
-        run: |
-          if [ ! -f 3rd-party/wgrib2.tgz ] ; then
-            make 3rd-party/wgrib2.tgz
-          fi
           
       - name: Build pirate-wgrib2 image
         if: 'false'
