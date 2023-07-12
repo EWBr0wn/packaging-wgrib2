@@ -61,10 +61,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/28mm-wgrib2
           labels: |
-            org.opencontainers.image.description="Rebuild of 28mm/wgrib2"
-            org.opencontainers.image.title="28mm-wgrib2"
+            org.opencontainers.image.description=Rebuild of 28mm/wgrib2
+            org.opencontainers.image.title=28mm-wgrib2
           tags: |
+            # minimal (short sha)
             type=sha
+            # full length sha
+            type=sha,format=long
             type=ref,event=branch
             type=semver,pattern=v{{version}}
 
