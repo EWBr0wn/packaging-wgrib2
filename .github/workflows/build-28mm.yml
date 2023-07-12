@@ -53,6 +53,27 @@ jobs:
           echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
 
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4.6.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/28mm-wgrib2
+          labels: |
+            org.opencontainers.image.description="Rebuild of 28mm/wgrib2"
+            org.opencontainers.image.title="28mm-wgrib2"
+          tags: |
+            type=sha
+            type=ref,event=branch
+            type=semver,pattern=v{{version}}
+
+      - name: Debug
+        run: |
+          echo '${{ toJSON(steps.meta.outputs) }}'
+          echo
+          env | sort
+
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
@@ -63,20 +84,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4.6.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/28mm-wgrib2
-
-      - name: Debug
-        run: |
-          echo '${{ toJSON(steps.meta.outputs) }}'
-          echo
-          env | sort
-
       - name: Build 28mm-wgrib2 image
         if: 'true'
         uses: docker/build-push-action@v4.1.1
@@ -86,6 +93,4 @@ jobs:
           file: Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: |
-            ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:latest
+          tags: ${{ steps.meta.outputs.tags }}
