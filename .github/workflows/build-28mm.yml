@@ -63,8 +63,6 @@ jobs:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
           file: Dockerfile
-          # Set the desired build target here
-          target: 28mm-wgrib2
           push: true
           tags: |
             ${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:${{ github.sha }}
