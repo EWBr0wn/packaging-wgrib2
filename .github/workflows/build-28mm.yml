@@ -4,11 +4,11 @@ on:
   # schedule:
   #   - cron: '30 22 * * *'
   push:
-    branches: none # [ 28mm ]
+    branches: [ 28mm ]
     # Publish semver tags as releases.
-    tags: none # [ 'v0.1.*' ]
+    tags: [ 'v0.1.*' ]
   pull_request:
-    branches: none # [ 28mm ]
+    branches: [ 28mm ]
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -57,7 +57,7 @@ jobs:
           env | sort
 
       - name: Build 28mm-wgrib2 image
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -65,8 +65,7 @@ jobs:
           file: Dockerfile
           # Set the desired build target here
           target: 28mm-wgrib2
-          push: false
+          push: true
           tags: |
             ${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:${{ github.sha }}
-            ${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:${{ steps.vars.outputs.tag }}
             ${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:latest
