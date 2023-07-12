@@ -87,5 +87,5 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: |
-            ${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:${{ github.sha }}
-            ${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:latest
+            ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/28mm-wgrib2:latest
