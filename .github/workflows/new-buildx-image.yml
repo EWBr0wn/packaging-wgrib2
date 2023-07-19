@@ -35,7 +35,7 @@ jobs:
       - name: Cache Docker registry
         if: 'true'
         id: cache-registry
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/docker-registry
@@ -61,7 +61,7 @@ jobs:
 
       - name: Cache Docker registry
         id: cache-registry
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/docker-registry
@@ -72,7 +72,7 @@ jobs:
               
       - name: Cache downloaded software
         id: cache-3rd-party
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             ${{ github.workspace }}/3rd-party/*
@@ -90,7 +90,7 @@ jobs:
 
       - name: Cache Docker layers
         id: cache-foundation
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/.buildx-cache
@@ -267,7 +267,7 @@ jobs:
         
       - name: Cache Docker registry
         id: cache-registry
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/docker-registry
@@ -278,7 +278,7 @@ jobs:
             
       - name: Cache downloaded software
         id: cache-3rd-party
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             ${{ github.workspace }}/3rd-party/*
@@ -295,7 +295,7 @@ jobs:
 
       - name: Cache Docker layers
         id: cache-lambda-base
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/.buildx-cache
@@ -411,7 +411,7 @@ jobs:
       - name: Cache Docker registry
         if: 'true'
         id: cache-registry
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/docker-registry
@@ -445,7 +445,7 @@ jobs:
             
       - name: Cache downloaded software
         id: cache-3rd-party
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             ${{ github.workspace }}/3rd-party/*
@@ -469,7 +469,7 @@ jobs:
 
       - name: Cache Docker layers
         id: cache-builder
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/.buildx-cache
@@ -639,7 +639,7 @@ jobs:
         
       - name: Cache Docker registry
         id: cache-registry
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/docker-registry
@@ -650,7 +650,7 @@ jobs:
             
       - name: Cache downloaded software
         id: cache-3rd-party
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             ${{ github.workspace }}/3rd-party/*
@@ -678,7 +678,7 @@ jobs:
           driver-opts: network=host
 
       - name: Cache Docker layers
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/.buildx-cache
@@ -794,7 +794,7 @@ jobs:
         
       - name: Cache Docker registry
         id: cache-registry
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/docker-registry
@@ -805,7 +805,7 @@ jobs:
             
       - name: Cache downloaded software
         id: cache-3rd-party
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             ${{ github.workspace }}/3rd-party/*
@@ -827,7 +827,7 @@ jobs:
           driver-opts: network=host
 
       - name: Cache Docker layers
-        uses: actions/cache@v1.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: |
             /tmp/.buildx-cache
