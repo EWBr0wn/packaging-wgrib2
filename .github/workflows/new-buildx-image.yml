@@ -123,7 +123,7 @@ jobs:
           fi
           
       - name: Upload cmake.tgz
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: cached-cmake.tgz
           path: 3rd-party/cmake.tgz
@@ -227,7 +227,7 @@ jobs:
   #        path: "cmake-*"  # file or directory you want out
   #    
   #    - name: Upload cmake-cache artifact
-  #      uses: actions/upload-artifact@v2
+  #      uses: actions/upload-artifact@v3.1.2
   #      with:
   #        path: ${{ steps.extract-cmake.outputs.destination }}
   #        name: cmake-cache
@@ -462,7 +462,7 @@ jobs:
           
       - name: Download foundation artifact/container
         ## Gleaned from https://docs.docker.com/build/ci/github-actions/share-image-jobs/
-        uses: actions/download-artifact@v2.1.1
+        uses: actions/download-artifact@v3.0.1
         with:
           name: foundation
           path: /tmp
@@ -660,13 +660,13 @@ jobs:
             ${{ runner.os }}-al2-3rd-party
             
       - name: Download artifact
-        uses: actions/download-artifact@v2.1.1
+        uses: actions/download-artifact@v3.0.1
         with:
           name: lambda-base
           path: /tmp
           
       - name: Download artifact
-        uses: actions/download-artifact@v2.1.1
+        uses: actions/download-artifact@v3.0.1
         with:
           name: builder
           path: /tmp
@@ -815,7 +815,7 @@ jobs:
             ${{ runner.os }}-al2-3rd-party
             
       - name: Download artifact
-        uses: actions/download-artifact@v2.1.1
+        uses: actions/download-artifact@v3.0.1
         with:
           name: builder
           path: /tmp
