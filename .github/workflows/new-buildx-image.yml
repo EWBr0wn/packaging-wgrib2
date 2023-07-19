@@ -26,8 +26,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-          - ${{ runner.temp }}/docker-registry:/var/lib/registry
+    #    volumes:
+    #      - ${{ runner.temp }}/docker-registry:/var/lib/registry
     steps:
       - name: Checkout
         uses: actions/checkout@v3
