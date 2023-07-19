@@ -27,7 +27,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - ~/tmp/docker-registry:/var/lib/registry
+          - ${{ runner.temp }}/docker-registry:/var/lib/registry
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -38,7 +38,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ~/tmp/docker-registry
+            ${{ runner.temp }}/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -52,7 +52,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - ${{ github.workspace }}/tmp/docker-registry:/var/lib/registry
+          - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs: 
       - docker-registry
     steps:
@@ -64,7 +64,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/docker-registry
+            ${{ runner.temp }}/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -93,7 +93,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/.buildx-cache
+            ${{ runner.temp }}/.buildx-cache
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
@@ -148,11 +148,11 @@ jobs:
           push: true
           tags: localhost:5000/foundation:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
-          cache-from: type=local,src=${{ github.workspace }}/tmp/.buildx-cache
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
-          cache-to: type=local,mode=max,dest=${{ github.workspace }}/tmp/.buildx-cache-new
+          cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
           
       - name: Build and export
         uses: docker/build-push-action@v4.1.1
@@ -163,13 +163,13 @@ jobs:
           # Set the desired build target here
           target: foundation
           tags: foundation:latest
-          outputs: type=docker,dest=${{ github.workspace }}/tmp/foundation.tar
+          outputs: type=docker,dest=${{ runner.temp }}/foundation.tar
           
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: foundation
-          path: ${{ github.workspace }}/tmp/foundation.tar
+          path: ${{ runner.temp }}/foundation.tar
 
       ## Gleaned from https://www.hyperdx.io/blog/docker-buildx-cache-with-github-actions
       - name: Build foundation image
@@ -209,8 +209,8 @@ jobs:
       - name: Move cache
         if: 'true'
         run: |
-          rm -rf ${{ github.workspace }}/tmp/.buildx-cache
-          mv -v ${{ github.workspace }}/tmp/.buildx-cache-new ${{ github.workspace }}/tmp/.buildx-cache
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
         
       - name: Inspect foundation
         if: 'false'
@@ -257,7 +257,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - ${{ github.workspace }}/tmp/docker-registry:/var/lib/registry
+          - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs: 
         - docker-registry
         - builder
@@ -270,7 +270,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/docker-registry
+            ${{ runner.temp }}/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -298,7 +298,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/.buildx-cache
+            ${{ runner.temp }}/.buildx-cache
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
@@ -321,11 +321,11 @@ jobs:
           push: true
           tags: localhost:5000/lambda-base:latest
           # tags: ${{ steps.prep.outputs.tagged_image }}
-          cache-from: type=local,src=${{ github.workspace }}/tmp/.buildx-cache
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
-          cache-to: type=local,mode=max,dest=${{ github.workspace }}/tmp/.buildx-cache-new
+          cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
           
       - name: Build and export
         uses: docker/build-push-action@v4.1.1
@@ -336,17 +336,17 @@ jobs:
           # Set the desired build target here
           target: lambda-base
           tags: lambda-base:latest
-          outputs: type=docker,dest=${{ github.workspace }}/tmp/lambda-base.tar
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-base.tar
           
       - name: Compress lambda-base.tar
         run: |
-          gzip -9v ${{ github.workspace }}/tmp/lambda-base.tar
+          gzip -9v ${{ runner.temp }}/lambda-base.tar
           
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-base
-          path: ${{ github.workspace }}/tmp/lambda-base.tar.gz
+          path: ${{ runner.temp }}/lambda-base.tar.gz
       
       - name: Build lambda-base image
         if: 'false'
@@ -376,8 +376,8 @@ jobs:
       - name: Move cache
         if: 'true'
         run: |
-          rm -rf ${{ github.workspace }}/tmp/.buildx-cache
-          mv -v ${{ github.workspace }}/tmp/.buildx-cache-new ${{ github.workspace }}/tmp/.buildx-cache
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
       
       - name: Inspect lambda-base
         run: |
@@ -391,7 +391,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - ${{ github.workspace }}/tmp/docker-registry:/var/lib/registry
+          - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs: 
         - foundation
     steps:
@@ -401,11 +401,11 @@ jobs:
       - name: Debug registry list - before
         if: 'true'
         run: |
-          if [ -d ${{ github.workspace }}/tmp/docker-registry ] ; then
-            echo "Directory listing: ${{ github.workspace }}/tmp/docker-registry"
-            ls -lah ${{ github.workspace }}/tmp/docker-registry
+          if [ -d ${{ runner.temp }}/docker-registry ] ; then
+            echo "Directory listing: ${{ runner.temp }}/docker-registry"
+            ls -lah ${{ runner.temp }}/docker-registry
           else
-            echo "Directory missing: ${{ github.workspace }}/tmp/docker-registry"
+            echo "Directory missing: ${{ runner.temp }}/docker-registry"
           fi
         
       - name: Cache Docker registry
@@ -414,7 +414,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/docker-registry
+            ${{ runner.temp }}/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -423,11 +423,11 @@ jobs:
       - name: Debug registry list - after
         if: 'true'
         run: |
-          if [ -d ${{ github.workspace }}/tmp/docker-registry ] ; then
-            echo "Directory listing: ${{ github.workspace }}/tmp/docker-registry"
-            ls -lah ${{ github.workspace }}/tmp/docker-registry
+          if [ -d ${{ runner.temp }}/docker-registry ] ; then
+            echo "Directory listing: ${{ runner.temp }}/docker-registry"
+            ls -lah ${{ runner.temp }}/docker-registry
           else
-            echo "Directory missing: ${{ github.workspace }}/tmp/docker-registry"
+            echo "Directory missing: ${{ runner.temp }}/docker-registry"
           fi
           
       - name: String concat
@@ -465,14 +465,14 @@ jobs:
         uses: actions/download-artifact@v3.0.1
         with:
           name: foundation
-          path: ${{ github.workspace }}/tmp
+          path: ${{ runner.temp }}
 
       - name: Cache Docker layers
         id: cache-builder
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/.buildx-cache
+            ${{ runner.temp }}/.buildx-cache
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
@@ -480,7 +480,7 @@ jobs:
             
       - name: Load image
         run: |
-          docker load --input ${{ github.workspace }}/tmp/foundation.tar
+          docker load --input ${{ runner.temp }}/foundation.tar
           docker image ls -a
           docker image tag foundation:latest localhost:5000/foundation:latest
           docker image push localhost:5000/foundation:latest
@@ -515,7 +515,7 @@ jobs:
         run: |
           echo "docker buildx imagetools inspect localhost:5000/foundation:latest"
           docker buildx build -t foundation:latest --pull \
-            --output=type=docker --cache-from=type=local,src=${{ github.workspace }}/tmp/.buildx-cache \
+            --output=type=docker --cache-from=type=local,src=${{ runner.temp }}/.buildx-cache \
             --progress plain
           
       - name: Download wgrib2
@@ -542,11 +542,11 @@ jobs:
           push: true
           tags: localhost:5000/builder:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
-          cache-from: type=local,src=${{ github.workspace }}/tmp/.buildx-cache
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
-          cache-to: type=local,mode=max,dest=${{ github.workspace }}/tmp/.buildx-cache-new
+          cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
           ## Gleaned from https://docs.docker.com/build/ci/github-actions/named-contexts/
           build-contexts: |
             foundation=docker-image://localhost:5000/foundation:latest
@@ -560,27 +560,27 @@ jobs:
           # Set the desired build target here
           target: builder
           tags: builder:latest
-          outputs: type=docker,dest=${{ github.workspace }}/tmp/builder.tar
+          outputs: type=docker,dest=${{ runner.temp }}/builder.tar
           build-contexts: |
             foundation=docker-image://localhost:5000/foundation:latest
           
       - name: List builder.tar - before
         run: |
-          ls -lh ${{ github.workspace }}/tmp/builder.tar
+          ls -lh ${{ runner.temp }}/builder.tar
           
       - name: Compress builder.tar
         run: |
-          gzip -9v ${{ github.workspace }}/tmp/builder.tar
+          gzip -9v ${{ runner.temp }}/builder.tar
           
       - name: List builder.tar - after
         run: |
-          ls -lh ${{ github.workspace }}/tmp/builder.tar.gz
+          ls -lh ${{ runner.temp }}/builder.tar.gz
           
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: builder
-          path: ${{ github.workspace }}/tmp/builder.tar.gz
+          path: ${{ runner.temp }}/builder.tar.gz
           
       - name: Build builder image
         if: 'false'
@@ -610,8 +610,8 @@ jobs:
       - name: Move cache
         if: 'false'
         run: |
-          rm -rf ${{ github.workspace }}/tmp/.buildx-cache
-          mv -v ${{ github.workspace }}/tmp/.buildx-cache-new ${{ github.workspace }}/tmp/.buildx-cache
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
       
       - name: Inspect foundation
         run: |
@@ -629,7 +629,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-        - ${{ github.workspace }}/tmp/docker-registry:/var/lib/registry
+        - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs:
         - lambda-base
         - builder
@@ -642,7 +642,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/docker-registry
+            ${{ runner.temp }}/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -663,13 +663,13 @@ jobs:
         uses: actions/download-artifact@v3.0.1
         with:
           name: lambda-base
-          path: ${{ github.workspace }}/tmp
+          path: ${{ runner.temp }}
           
       - name: Download artifact
         uses: actions/download-artifact@v3.0.1
         with:
           name: builder
-          path: ${{ github.workspace }}/tmp
+          path: ${{ runner.temp }}
             
       - name: Setup Docker Buildx
         id: buildx
@@ -681,7 +681,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/.buildx-cache
+            ${{ runner.temp }}/.buildx-cache
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
@@ -689,16 +689,16 @@ jobs:
             
       - name: Load image - lambda-base
         run: |
-          gzip -dv ${{ github.workspace }}/tmp/lambda-base.tar.gz
-          docker load --input ${{ github.workspace }}/tmp/lambda-base.tar
+          gzip -dv ${{ runner.temp }}/lambda-base.tar.gz
+          docker load --input ${{ runner.temp }}/lambda-base.tar
           docker image ls -a
           docker image tag lambda-base:latest localhost:5000/lambda-base:latest
           docker image push localhost:5000/lambda-base:latest
           
       - name: Load image - builder
         run: |
-          gzip -dv ${{ github.workspace }}/tmp/builder.tar.gz
-          docker load --input ${{ github.workspace }}/tmp/builder.tar
+          gzip -dv ${{ runner.temp }}/builder.tar.gz
+          docker load --input ${{ runner.temp }}/builder.tar
           docker image ls -a
           docker image tag builder:latest localhost:5000/builder:latest
           docker image push localhost:5000/builder:latest
@@ -714,11 +714,11 @@ jobs:
           push: true
           tags: localhost:5000/lambda-wgrib2:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
-          cache-from: type=local,src=${{ github.workspace }}/tmp/.buildx-cache
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
-          cache-to: type=local,mode=max,dest=${{ github.workspace }}/tmp/.buildx-cache-new
+          cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
           build-contexts: |
             builder=docker-image://localhost:5000/lambda-base:latest
             builder=docker-image://localhost:5000/builder:latest
@@ -733,8 +733,8 @@ jobs:
           # Set the desired build target here
           target: lambda-wgrib2
           tags: lambda-wgrib2:latest
-          cache-from: type=local,src=${{ github.workspace }}/tmp/.buildx-cache-new
-          outputs: type=docker,dest=${{ github.workspace }}/tmp/lambda-wgrib2.tar
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-new
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
           build-contexts: |
             builder=docker-image://localhost:5000/lambda-base:latest
             builder=docker-image://localhost:5000/builder:latest
@@ -754,8 +754,8 @@ jobs:
 
       - name: Move cache
         run: |
-          rm -rf ${{ github.workspace }}/tmp/.buildx-cache
-          mv -v ${{ github.workspace }}/tmp/.buildx-cache-new ${{ github.workspace }}/tmp/.buildx-cache
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
                 
       - name: Inspect foundation
         if: 'false'
@@ -784,7 +784,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-        - ${{ github.workspace }}/tmp/docker-registry:/var/lib/registry
+        - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs:
         - builder
         - lambda-wgrib2
@@ -797,7 +797,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/docker-registry
+            ${{ runner.temp }}/docker-registry
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -818,7 +818,7 @@ jobs:
         uses: actions/download-artifact@v3.0.1
         with:
           name: builder
-          path: ${{ github.workspace }}/tmp
+          path: ${{ runner.temp }}
             
       - name: Setup Docker Buildx
         id: buildx
@@ -830,7 +830,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/tmp/.buildx-cache
+            ${{ runner.temp }}/.buildx-cache
             ./3rd-party/pywgrib2_s.py
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
@@ -839,8 +839,8 @@ jobs:
 
       - name: Load image - builder
         run: |
-          gzip -dv ${{ github.workspace }}/tmp/builder.tar.gz
-          docker load --input ${{ github.workspace }}/tmp/builder.tar
+          gzip -dv ${{ runner.temp }}/builder.tar.gz
+          docker load --input ${{ runner.temp }}/builder.tar
           docker image ls -a
           docker image tag builder:latest localhost:5000/builder:latest
           docker image push localhost:5000/builder:latest
@@ -860,11 +860,11 @@ jobs:
           push: true
           tags: localhost:5000/lambda-pywgrib2:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
-          cache-from: type=local,src=${{ github.workspace }}/tmp/.buildx-cache
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
-          cache-to: type=local,mode=max,dest=${{ github.workspace }}/tmp/.buildx-cache-new
+          cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
           build-contexts: |
             builder=docker-image://localhost:5000/builder:latest
 
@@ -878,8 +878,8 @@ jobs:
           # Set the desired build target here
           target: lambda-pywgrib2
           tags: lambda-pywgrib2:latest
-          cache-from: type=local,src=${{ github.workspace }}/tmp/.buildx-cache-new
-          outputs: type=docker,dest=${{ github.workspace }}/tmp/lambda-pywgrib2.tar
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-new
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2.tar
           build-contexts: |
             builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-pywgrib2:latest
@@ -887,16 +887,16 @@ jobs:
       - name: Compress lambda-pywgrib2.tar
         if: 'true'
         run: |
-          gzip -9v ${{ github.workspace }}/tmp/lambda-pywgrib2.tar
+          gzip -9v ${{ runner.temp }}/lambda-pywgrib2.tar
 
       - name: Upload artifact
         if: 'true'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-pywgrib2
-          path: ${{ github.workspace }}/tmp/lambda-pywgrib2.tar.gz
+          path: ${{ runner.temp }}/lambda-pywgrib2.tar.gz
 
       - name: Move cache
         run: |
-          rm -rf ${{ github.workspace }}/tmp/.buildx-cache
-          mv -v ${{ github.workspace }}/tmp/.buildx-cache-new ${{ github.workspace }}/tmp/.buildx-cache
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
