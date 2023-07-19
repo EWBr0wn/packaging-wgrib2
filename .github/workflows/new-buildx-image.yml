@@ -51,8 +51,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-          - ${{ runner.temp }}/docker-registry:/var/lib/registry
+    #    volumes:
+    #      - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs: 
       - docker-registry
     steps:
@@ -256,8 +256,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-          - ${{ runner.temp }}/docker-registry:/var/lib/registry
+      #  volumes:
+      #    - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs: 
         - docker-registry
         - builder
@@ -390,8 +390,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-          - ${{ runner.temp }}/docker-registry:/var/lib/registry
+      #  volumes:
+      #    - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs: 
         - foundation
     steps:
@@ -628,8 +628,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-        - ${{ runner.temp }}/docker-registry:/var/lib/registry
+      #  volumes:
+      #  - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs:
         - lambda-base
         - builder
@@ -783,8 +783,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-        - ${{ runner.temp }}/docker-registry:/var/lib/registry
+      #  volumes:
+      #  - ${{ runner.temp }}/docker-registry:/var/lib/registry
     needs:
         - builder
         - lambda-wgrib2
