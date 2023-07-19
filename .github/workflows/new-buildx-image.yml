@@ -867,7 +867,7 @@ jobs:
             builder=docker-image://localhost:5000/builder:latest
 
       - name: Build and export
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -876,19 +876,19 @@ jobs:
           # Set the desired build target here
           target: lambda-pywgrib2
           tags: lambda-pywgrib2:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-from: type=local,src=/tmp/.buildx-cache-new
           outputs: type=docker,dest=/tmp/lambda-pywgrib2.tar
           build-contexts: |
             builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-pywgrib2:latest
 
       - name: Compress lambda-pywgrib2.tar
-        if: 'false'
+        if: 'true'
         run: |
           gzip -9v /tmp/lambda-pywgrib2.tar
 
       - name: Upload artifact
-        if: 'false'
+        if: 'true'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-pywgrib2
