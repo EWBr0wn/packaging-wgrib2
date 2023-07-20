@@ -869,7 +869,7 @@ jobs:
             builder=docker-image://localhost:5000/builder:latest
 
       - name: Build and export
-        if: 'true'
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -885,12 +885,12 @@ jobs:
             builder=docker-image://localhost:5000/lambda-pywgrib2:latest
 
       - name: Compress lambda-pywgrib2.tar
-        if: 'true'
+        if: 'false'
         run: |
           gzip -9v ${{ runner.temp }}/lambda-pywgrib2.tar
 
       - name: Upload artifact
-        if: 'true'
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-pywgrib2
