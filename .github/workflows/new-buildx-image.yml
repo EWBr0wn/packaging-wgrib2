@@ -101,7 +101,7 @@ jobs:
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-buildx
-              
+
       - name: debug
         if: 'false'
         run: |
@@ -138,7 +138,8 @@ jobs:
           echo "List current directory:" && ls -lah && echo
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           df -h
-            
+
+       ## Gleaned from https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
       - name: Build foundation image
         if: 'true'
         uses: docker/build-push-action@v4.1.1
