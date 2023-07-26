@@ -341,8 +341,10 @@ jobs:
           target: lambda-base
           tags: lambda-base:latest
           outputs: type=docker,dest=${{ runner.temp }}/lambda-base.tar
-          
+
+      ## Artifacts are automatically gzipped per https://github.com/actions/toolkit/blob/master/packages/artifact/docs/additional-information.md#is-my-artifact-compressed
       - name: Compress lambda-base.tar
+        if: 'false'
         run: |
           gzip -9v ${{ runner.temp }}/lambda-base.tar
           
@@ -350,7 +352,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-base
-          path: ${{ runner.temp }}/lambda-base.tar.gz
+          path: ${{ runner.temp }}/lambda-base.tar
       
       - name: Build lambda-base image
         if: 'false'
@@ -567,24 +569,12 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/builder.tar
           build-contexts: |
             foundation=docker-image://localhost:5000/foundation:latest
-          
-      - name: List builder.tar - before
-        run: |
-          ls -lh ${{ runner.temp }}/builder.tar
-          
-      - name: Compress builder.tar
-        run: |
-          gzip -9v ${{ runner.temp }}/builder.tar
-          
-      - name: List builder.tar - after
-        run: |
-          ls -lh ${{ runner.temp }}/builder.tar.gz
-          
+         
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: builder
-          path: ${{ runner.temp }}/builder.tar.gz
+          path: ${{ runner.temp }}/builder.tar
           
       - name: Build builder image
         if: 'false'
@@ -693,7 +683,6 @@ jobs:
             
       - name: Load image - lambda-base
         run: |
-          gzip -dv ${{ runner.temp }}/lambda-base.tar.gz
           docker load --input ${{ runner.temp }}/lambda-base.tar
           docker image ls -a
           docker image tag lambda-base:latest localhost:5000/lambda-base:latest
@@ -701,7 +690,6 @@ jobs:
           
       - name: Load image - builder
         run: |
-          gzip -dv ${{ runner.temp }}/builder.tar.gz
           docker load --input ${{ runner.temp }}/builder.tar
           docker image ls -a
           docker image tag builder:latest localhost:5000/builder:latest
@@ -744,17 +732,12 @@ jobs:
             builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-wgrib2:latest
 
-      - name: Compress lambda-wgrib2.tar
-        if: 'false'
-        run: |
-          gzip -9v /tmp/lambda-wgrib2.tar
-
       - name: Upload artifact
         if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-wgrib2
-          path: /tmp/lambda-wgrib2.tar.gz
+          path: /tmp/lambda-wgrib2.tar
 
       - name: Move cache
         run: |
@@ -843,7 +826,6 @@ jobs:
 
       - name: Load image - builder
         run: |
-          gzip -dv ${{ runner.temp }}/builder.tar.gz
           docker load --input ${{ runner.temp }}/builder.tar
           docker image ls -a
           docker image tag builder:latest localhost:5000/builder:latest
@@ -890,17 +872,12 @@ jobs:
             builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-pywgrib2:latest
 
-      - name: Compress lambda-pywgrib2.tar
-        if: 'false'
-        run: |
-          gzip -9v ${{ runner.temp }}/lambda-pywgrib2.tar
-
       - name: Upload artifact
         if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-pywgrib2
-          path: ${{ runner.temp }}/lambda-pywgrib2.tar.gz
+          path: ${{ runner.temp }}/lambda-pywgrib2.tar
 
       - name: Move cache
         run: |
