@@ -150,7 +150,7 @@ jobs:
           # Set the desired build target here
           target: foundation
           push: true
-          tags: registry-service:5000/foundation:latest
+          tags: registry-service/foundation:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
@@ -186,7 +186,7 @@ jobs:
           # Set the desired build target here
           target: foundation
           push: true
-          tags: registry-service:5000/foundation:latest
+          tags: registry-service/foundation:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=gha
           # Note the mode=max here
@@ -197,12 +197,12 @@ jobs:
       - name: Debug docker
         if: 'false'
         run: |
-          ## echo "Docker run:" && docker pull --label foundation registry-service:5000/foundation && echo
+          ## echo "Docker run:" && docker pull --label foundation registry-service/foundation && echo
           # echo "Docker ps output:" && docker ps -a && echo
           # echo "Docker buildx ls output:" && docker buildx ls && echo
           # echo "Docker images output:" && docker images --all && echo
           ## Gleaned from https://stackoverflow.com/questions/31251356/how-to-get-a-list-of-images-on-docker-registry-v2
-          ## echo "List images in docker registry:" && curl -X GET https://registry-service:5000/v2/_catalog | jq . && echo
+          ## echo "List images in docker registry:" && curl -X GET https://registry-service/v2/_catalog | jq . && echo
           echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
           ls -lah /tmp/.buildx-cache*/{blobs,ingest}/sha256 && echo
           echo "Diff buildx-cache directories:"
@@ -219,7 +219,7 @@ jobs:
       - name: Inspect foundation
         if: 'false'
         run: |
-          # docker buildx imagetools inspect registry-service:5000/foundation:latest
+          # docker buildx imagetools inspect registry-service/foundation:latest
           docker buildx imagetools inspect foundation
       
        ## Gleaned from https://github.com/marketplace/actions/docker-extract
@@ -227,7 +227,7 @@ jobs:
   #      uses: shrink/actions-docker-extract@v2
   #      id: extract-cmake
   #      with:
-  #        image: "registry-service:5000/foundation"
+  #        image: "registry-service/foundation"
   #        path: "cmake-*"  # file or directory you want out
   #    
   #    - name: Upload cmake-cache artifact
