@@ -25,7 +25,7 @@ jobs:
   docker-registry:
     runs-on: ubuntu-latest
     services:
-      registry:
+      registry-service:
         image: registry:2
         ports:
           - 5000:5000
@@ -50,7 +50,7 @@ jobs:
   foundation:
     runs-on: ubuntu-latest
     services:
-      registry:
+      registry-service:
         image: registry:2
         ports:
           - 5000:5000
@@ -150,7 +150,7 @@ jobs:
           # Set the desired build target here
           target: foundation
           push: true
-          tags: localhost:5000/foundation:latest
+          tags: registry-service:5000/foundation:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
@@ -186,7 +186,7 @@ jobs:
           # Set the desired build target here
           target: foundation
           push: true
-          tags: localhost:5000/foundation:latest
+          tags: registry-service:5000/foundation:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=gha
           # Note the mode=max here
@@ -197,12 +197,12 @@ jobs:
       - name: Debug docker
         if: 'false'
         run: |
-          ## echo "Docker run:" && docker pull --label foundation localhost:5000/foundation && echo
+          ## echo "Docker run:" && docker pull --label foundation registry-service:5000/foundation && echo
           # echo "Docker ps output:" && docker ps -a && echo
           # echo "Docker buildx ls output:" && docker buildx ls && echo
           # echo "Docker images output:" && docker images --all && echo
           ## Gleaned from https://stackoverflow.com/questions/31251356/how-to-get-a-list-of-images-on-docker-registry-v2
-          ## echo "List images in docker registry:" && curl -X GET https://localhost:5000/v2/_catalog | jq . && echo
+          ## echo "List images in docker registry:" && curl -X GET https://registry-service:5000/v2/_catalog | jq . && echo
           echo "List buildx-cache directories:" && ls -lah /tmp/.buildx-cache* && echo
           ls -lah /tmp/.buildx-cache*/{blobs,ingest}/sha256 && echo
           echo "Diff buildx-cache directories:"
@@ -219,7 +219,7 @@ jobs:
       - name: Inspect foundation
         if: 'false'
         run: |
-          # docker buildx imagetools inspect localhost:5000/foundation:latest
+          # docker buildx imagetools inspect registry-service:5000/foundation:latest
           docker buildx imagetools inspect foundation
       
        ## Gleaned from https://github.com/marketplace/actions/docker-extract
@@ -227,7 +227,7 @@ jobs:
   #      uses: shrink/actions-docker-extract@v2
   #      id: extract-cmake
   #      with:
-  #        image: "localhost:5000/foundation"
+  #        image: "registry-service:5000/foundation"
   #        path: "cmake-*"  # file or directory you want out
   #    
   #    - name: Upload cmake-cache artifact
@@ -256,7 +256,7 @@ jobs:
   lambda-base:
     runs-on: ubuntu-latest
     services:
-      registry:
+      registry-service:
         image: registry:2
         ports:
           - 5000:5000
@@ -323,7 +323,7 @@ jobs:
           # Set the desired build target here
           target: lambda-base
           push: true
-          tags: localhost:5000/lambda-base:latest
+          tags: registry-service:5000/lambda-base:latest
           # tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
@@ -364,7 +364,7 @@ jobs:
           # Set the desired build target here
           target: lambda-base
           push: true
-          tags: localhost:5000/lambda-base:latest
+          tags: registry-service:5000/lambda-base:latest
           # tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=gha
           # Note the mode=max here
@@ -387,12 +387,12 @@ jobs:
       
       - name: Inspect lambda-base
         run: |
-          docker buildx imagetools inspect localhost:5000/lambda-base:latest
+          docker buildx imagetools inspect registry-service:5000/lambda-base:latest
 
   builder:
     runs-on: ubuntu-latest
     services:
-      registry:
+      registry-service:
         image: registry:2
         ports:
           - 5000:5000
@@ -488,8 +488,8 @@ jobs:
         run: |
           docker load --input ${{ runner.temp }}/foundation.tar
           docker image ls -a
-          docker image tag foundation:latest localhost:5000/foundation:latest
-          docker image push localhost:5000/foundation:latest
+          docker image tag foundation:latest registry-service:5000/foundation:latest
+          docker image push registry-service:5000/foundation:latest
                           
       - name: debug
         if: 'false'
@@ -513,13 +513,13 @@ jobs:
           echo "Docker ps output:" && docker ps -a && echo
           echo "Docker buildx ls output:" && docker buildx ls && echo
           echo "Docker images output:" && docker images --all && echo
-          echo "Docker run:" && docker pull localhost:5000/foundation && echo
+          echo "Docker run:" && docker pull registry-service:5000/foundation && echo
       
       ## Gleaned from https://github.com/docker/buildx/issues/1370
       - name: Inspect foundation
         if: 'false'
         run: |
-          echo "docker buildx imagetools inspect localhost:5000/foundation:latest"
+          echo "docker buildx imagetools inspect registry-service:5000/foundation:latest"
           docker buildx build -t foundation:latest --pull \
             --output=type=docker --cache-from=type=local,src=${{ runner.temp }}/.buildx-cache \
             --progress plain
@@ -534,7 +534,7 @@ jobs:
       - name: Inspect foundation
         if: 'false'
         run: |
-          docker buildx imagetools inspect localhost:5000/foundation:latest
+          docker buildx imagetools inspect registry-service:5000/foundation:latest
           
       - name: Build builder image
         if: 'true'
@@ -546,7 +546,7 @@ jobs:
           # Set the desired build target here
           target: builder
           push: true
-          tags: localhost:5000/builder:latest
+          tags: registry-service:5000/builder:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
@@ -555,7 +555,7 @@ jobs:
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
           ## Gleaned from https://docs.docker.com/build/ci/github-actions/named-contexts/
           build-contexts: |
-            foundation=docker-image://localhost:5000/foundation:latest
+            foundation=docker-image://registry-service:5000/foundation:latest
             
       - name: Build and export
         uses: docker/build-push-action@v4.1.1
@@ -568,7 +568,7 @@ jobs:
           tags: builder:latest
           outputs: type=docker,dest=${{ runner.temp }}/builder.tar
           build-contexts: |
-            foundation=docker-image://localhost:5000/foundation:latest
+            foundation=docker-image://registry-service:5000/foundation:latest
          
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
@@ -586,7 +586,7 @@ jobs:
           # Set the desired build target here
           target: builder
           push: true
-          tags: localhost:5000/builder:latest
+          tags: registry-service:5000/builder:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=gha
           # Note the mode=max here
@@ -609,16 +609,16 @@ jobs:
       
       - name: Inspect foundation
         run: |
-          docker buildx imagetools inspect localhost:5000/foundation:latest
+          docker buildx imagetools inspect registry-service:5000/foundation:latest
 
       - name: Inspect builder
         run: |
-          docker buildx imagetools inspect localhost:5000/builder:latest
+          docker buildx imagetools inspect registry-service:5000/builder:latest
 
   lambda-wgrib2:
     runs-on: ubuntu-latest
     services:
-      registry:
+      registry-service:
         image: registry:2
         ports:
           - 5000:5000
@@ -685,15 +685,15 @@ jobs:
         run: |
           docker load --input ${{ runner.temp }}/lambda-base.tar
           docker image ls -a
-          docker image tag lambda-base:latest localhost:5000/lambda-base:latest
-          docker image push localhost:5000/lambda-base:latest
+          docker image tag lambda-base:latest registry-service:5000/lambda-base:latest
+          docker image push registry-service:5000/lambda-base:latest
           
       - name: Load image - builder
         run: |
           docker load --input ${{ runner.temp }}/builder.tar
           docker image ls -a
-          docker image tag builder:latest localhost:5000/builder:latest
-          docker image push localhost:5000/builder:latest
+          docker image tag builder:latest registry-service:5000/builder:latest
+          docker image push registry-service:5000/builder:latest
 
       - name: Build lambda-wgrib2 image
         uses: docker/build-push-action@v4.1.1
@@ -704,7 +704,7 @@ jobs:
           # Set the desired build target here
           target: lambda-wgrib2
           push: true
-          tags: localhost:5000/lambda-wgrib2:latest
+          tags: registry-service:5000/lambda-wgrib2:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
@@ -712,8 +712,8 @@ jobs:
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
           build-contexts: |
-            builder=docker-image://localhost:5000/lambda-base:latest
-            builder=docker-image://localhost:5000/builder:latest
+            builder=docker-image://registry-service:5000/lambda-base:latest
+            builder=docker-image://registry-service:5000/builder:latest
 
       - name: Build and export
         if: 'false'
@@ -728,9 +728,9 @@ jobs:
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-new
           outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
           build-contexts: |
-            builder=docker-image://localhost:5000/lambda-base:latest
-            builder=docker-image://localhost:5000/builder:latest
-            builder=docker-image://localhost:5000/lambda-wgrib2:latest
+            builder=docker-image://registry-service:5000/lambda-base:latest
+            builder=docker-image://registry-service:5000/builder:latest
+            builder=docker-image://registry-service:5000/lambda-wgrib2:latest
 
       - name: Upload artifact
         if: 'false'
@@ -747,26 +747,26 @@ jobs:
       - name: Inspect foundation
         if: 'false'
         run: |
-          docker buildx imagetools inspect localhost:5000/foundation:latest
+          docker buildx imagetools inspect registry-service:5000/foundation:latest
       
       - name: Inspect lambda-base
         if: 'false'
         run: |
-          docker buildx imagetools inspect localhost:5000/lambda-base:latest
+          docker buildx imagetools inspect registry-service:5000/lambda-base:latest
 
       - name: Inspect builder
         if: 'false'
         run: |
-          docker buildx imagetools inspect localhost:5000/builder:latest
+          docker buildx imagetools inspect registry-service:5000/builder:latest
           
       - name: Inspect lambda-wgrib2
         run: |
-          docker buildx imagetools inspect localhost:5000/lambda-wgrib2:latest
+          docker buildx imagetools inspect registry-service:5000/lambda-wgrib2:latest
 
   lambda-pywgrib2:
     runs-on: ubuntu-latest
     services:
-      registry:
+      registry-service:
         image: registry:2
         ports:
           - 5000:5000
@@ -828,8 +828,8 @@ jobs:
         run: |
           docker load --input ${{ runner.temp }}/builder.tar
           docker image ls -a
-          docker image tag builder:latest localhost:5000/builder:latest
-          docker image push localhost:5000/builder:latest
+          docker image tag builder:latest registry-service:5000/builder:latest
+          docker image push registry-service:5000/builder:latest
       
       - name: Download pywgrib2_s.py
         run: |
@@ -846,7 +846,7 @@ jobs:
           push: true
           # see https://github.com/docker/build-push-action/issues/820
           platforms: linux/amd64
-          tags: localhost:5000/lambda-pywgrib2:latest
+          tags: registry-service:5000/lambda-pywgrib2:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
@@ -854,7 +854,7 @@ jobs:
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
           build-contexts: |
-            builder=docker-image://localhost:5000/builder:latest
+            builder=docker-image://registry-service:5000/builder:latest
 
       - name: Build and export
         if: 'false'
@@ -869,8 +869,8 @@ jobs:
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-new
           outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2.tar
           build-contexts: |
-            builder=docker-image://localhost:5000/builder:latest
-            builder=docker-image://localhost:5000/lambda-pywgrib2:latest
+            builder=docker-image://registry-service:5000/builder:latest
+            builder=docker-image://registry-service:5000/lambda-pywgrib2:latest
 
       - name: Upload artifact
         if: 'false'
