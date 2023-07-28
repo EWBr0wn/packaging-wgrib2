@@ -39,6 +39,8 @@ jobs:
         run: |
           echo ${{ github.workspace }}
           ls -lh ${{ github.workspace }}
+          echo ${{ runner.temp }}
+          ls -lh ${{ runner.temp }}
             
       - name: Cache Docker registry
         if: 'true'
@@ -59,8 +61,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-        volumes:
-          - ${{ github.workspace }}/docker-registry:/var/lib/registry
+    #    volumes:
+    #      - ${{ github.workspace }}/docker-registry:/var/lib/registry
     needs: 
       - docker-registry
     steps:
