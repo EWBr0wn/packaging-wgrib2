@@ -41,6 +41,10 @@ jobs:
           ls -lh ${{ github.workspace }}
           echo ${{ runner.temp }}
           ls -lh ${{ runner.temp }}
+          echo /home/runner/work
+          ls -lahR /home/runner/work
+          echo /tmp
+          ls -lahR /tmp
             
       - name: Cache Docker registry
         if: 'true'
