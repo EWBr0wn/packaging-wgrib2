@@ -30,7 +30,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - ${{ github.workspace }}/docker-registry:/var/lib/registry
+          - /home/runner/factory:/var/lib/registry
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/docker-registry
+            /home/runner/factory
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
