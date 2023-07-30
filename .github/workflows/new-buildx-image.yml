@@ -32,13 +32,15 @@ jobs:
         volumes:
           - /home/runner/factory:/var/lib/registry
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    #  - name: Checkout
+    #    uses: actions/checkout@v3
         
       - name: debug directory listing
         run: |
           echo ${{ github.workspace }}
           ls -lh ${{ github.workspace }}
+          echo /opt/post-generation
+          ls -lh /opt/post-generation
           echo ${{ runner.temp }}
           ls -lh ${{ runner.temp }}
           echo /home/runner/work
