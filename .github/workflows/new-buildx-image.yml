@@ -30,7 +30,9 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - /home/runner/factory:/var/lib/registry
+          ## Ick: Need a directory that exists before "everything"
+          # Gleaned from https://github.com/actions/runner-images/blob/main/docs/create-image-and-azure-resources.md
+          - /opt/post-generation:/var/lib/registry
     steps:
     #  - name: Checkout
     #    uses: actions/checkout@v3
@@ -47,6 +49,9 @@ jobs:
           ls -lah /home/runner/work
           echo /home/runner/{.cargo,.composer,.config,.docker,factory,runners,warmup}
           ls -lah /home/runner/{.cargo,.composer,.config,.docker,factory,runners,warmup}
+          # could use /home/runner/factory, but checking out /home
+          echo /home
+          ls -lah /home
             
       - name: Cache Docker registry
         if: 'true'
@@ -54,7 +59,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            /home/runner/factory
+            /opt/post-generation
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
