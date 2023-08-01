@@ -928,6 +928,9 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
+    needs:
+        - lambda-wgrib2
+        - lambda-pywgrib2
     steps:
       - name: Set variables
         id: vars
@@ -936,6 +939,26 @@ jobs:
           echo "tag=${GITHUB_REF#refs/*/}" >> ${GITHUB_OUTPUT}
           echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
+      
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo '$GITHUB_CONTEXT'
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo '$JOB_CONTEXT'
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo '$STEPS_CONTEXT'
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo '$RUNNER_CONTEXT'
+      - name: Actor
+        run: |
+          echo "Actor: ${{ github.actor }}"
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta-wgrib2
