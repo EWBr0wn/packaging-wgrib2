@@ -72,8 +72,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-    #    volumes:
-    #      - ${{ github.workspace }}/docker-registry:/var/lib/registry
+        volumes:
+          - /opt/post-generation:/var/lib/registry
     needs: 
       - docker-registry
     steps:
@@ -92,7 +92,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ github.workspace }}/docker-registry
+            /opt/post-generation
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -285,8 +285,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-      #  volumes:
-      #    - ${{ runner.temp }}/docker-registry:/var/lib/registry
+        volumes:
+          - /opt/post-generation:/var/lib/registry
     needs: 
         - docker-registry
         - builder
@@ -300,6 +300,7 @@ jobs:
         with:
           path: |
             ${{ runner.temp }}/docker-registry
+            /opt/post-generation
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -421,8 +422,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-      #  volumes:
-      #    - ${{ runner.temp }}/docker-registry:/var/lib/registry
+        volumes:
+          - /opt/post-generation:/var/lib/registry
     needs: 
         - foundation
     steps:
@@ -432,11 +433,11 @@ jobs:
       - name: Debug registry list - before
         if: 'true'
         run: |
-          if [ -d ${{ runner.temp }}/docker-registry ] ; then
-            echo "Directory listing: ${{ runner.temp }}/docker-registry"
-            ls -lah ${{ runner.temp }}/docker-registry
+          if [ -d /opt/post-generation ] ; then
+            echo "Directory listing: /opt/post-generation"
+            ls -lah /opt/post-generation
           else
-            echo "Directory missing: ${{ runner.temp }}/docker-registry"
+            echo "Directory missing: /opt/post-generation"
           fi
         
       - name: Cache Docker registry
@@ -445,7 +446,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ runner.temp }}/docker-registry
+            /opt/post-generation
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -454,11 +455,11 @@ jobs:
       - name: Debug registry list - after
         if: 'true'
         run: |
-          if [ -d ${{ runner.temp }}/docker-registry ] ; then
-            echo "Directory listing: ${{ runner.temp }}/docker-registry"
-            ls -lah ${{ runner.temp }}/docker-registry
+          if [ -d /opt/post-generation ] ; then
+            echo "Directory listing: /opt/post-generation"
+            ls -lah /opt/post-generation
           else
-            echo "Directory missing: ${{ runner.temp }}/docker-registry"
+            echo "Directory missing: /opt/post-generation"
           fi
           
       - name: String concat
@@ -647,8 +648,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-      #  volumes:
-      #  - ${{ runner.temp }}/docker-registry:/var/lib/registry
+        volumes:
+        - /opt/post-generation:/var/lib/registry
     needs:
         - lambda-base
         - builder
@@ -661,7 +662,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ runner.temp }}/docker-registry
+            /opt/post-generation
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
@@ -795,8 +796,8 @@ jobs:
         image: registry:2
         ports:
           - 5000:5000
-      #  volumes:
-      #  - ${{ runner.temp }}/docker-registry:/var/lib/registry
+        volumes:
+        - /opt/post-generation:/var/lib/registry
     needs:
         - builder
         - lambda-wgrib2
@@ -809,7 +810,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: |
-            ${{ runner.temp }}/docker-registry
+            /opt/post-generation
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
