@@ -919,3 +919,45 @@ jobs:
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
+
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+    steps:
+      - name: Set variables
+        id: vars
+        run: |
+          # access with 'echo ${{ steps.vars.outputs.tag }}'
+          echo "tag=${GITHUB_REF#refs/*/}" >> ${GITHUB_OUTPUT}
+          echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
+          echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-wgrib2
+        uses: docker/metadata-action@v4.6.0
+        with:
+          images: ${{ steps.vars.outputs.repoowner }}/lambda-wgrib2
+
+      - name: Debug
+        run: |
+          echo '${{ github.ref_name }}'
+          echo '${{ toJSON(steps.meta-wgrib2.outputs) }}'
+          echo
+          env | sort
+          
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-pywgrib2
+        uses: docker/metadata-action@v4.6.0
+        with:
+          images: ${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2
+
+      - name: Debug
+        run: |
+          echo '${{ toJSON(steps.meta-pywgrib2.outputs) }}'
+          echo
+          env | sort
