@@ -37,7 +37,7 @@ jobs:
     steps:
     #  - name: Checkout
     #    uses: actions/checkout@v3
-        
+
       - name: debug directory listing
         run: |
           echo ${{ github.workspace }}
@@ -53,7 +53,7 @@ jobs:
           # could use /home/runner/factory, but checking out /home
           echo /home
           ls -lah /home
-            
+
       - name: Cache Docker registry
         if: 'false'
         id: cache-registry
@@ -66,7 +66,7 @@ jobs:
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-registry
-            
+
   foundation:
     runs-on: ubuntu-latest
     services:
@@ -101,7 +101,7 @@ jobs:
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-registry
-              
+
       - name: Cache downloaded software
         id: cache-3rd-party
         uses: actions/cache@v3.3.1
@@ -112,7 +112,7 @@ jobs:
           key: ${{ runner.os }}-al2-3rd-party
           restore-keys: |
             ${{ runner.os }}-al2-3rd-party
-              
+
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2.7.0
@@ -146,20 +146,20 @@ jobs:
             echo
           fi
           df -h
-            
+
       - name: Download cmake
         if: steps.cache-3rd-party.outputs.cache-hit != 'true'
         run: |
           if [ ! -f 3rd-party/cmake.tgz ] ; then
             make 3rd-party/cmake.tgz
           fi
-          
+
       - name: Upload cmake.tgz
         uses: actions/upload-artifact@v3.1.2
         with:
           name: cached-cmake.tgz
           path: 3rd-party/cmake.tgz
-        
+
       - name: debug
         if: 'true'
         run: |
@@ -186,7 +186,7 @@ jobs:
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
-          
+
       - name: Build and export
         uses: docker/build-push-action@v4.1.1
         with:
@@ -197,7 +197,7 @@ jobs:
           target: foundation
           tags: foundation:latest
           outputs: type=docker,dest=${{ runner.temp }}/foundation.tar
-          
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
         with:
@@ -238,19 +238,19 @@ jobs:
           if [ -d /tmp/.buildx-cache-new ] ; then
             diff -r --brief /tmp/.buildx-cache /tmp/.buildx-cache-new
           fi
-            
+
       - name: Move cache
         if: 'true'
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
-        
+
       - name: Inspect foundation
         if: 'false'
         run: |
           # docker buildx imagetools inspect localhost:5000/foundation:latest
           docker buildx imagetools inspect foundation
-      
+
        ## Gleaned from https://github.com/marketplace/actions/docker-extract
   #    - name: Extract from Docker image
   #      uses: shrink/actions-docker-extract@v2
@@ -281,7 +281,7 @@ jobs:
   #        # Duration after which artifact will expire in days. 0 means using default retention.
   #        # Minimum 1 day. Maximum 90 days unless changed from the repository settings page.
   #        # retention-days: # optional
-    
+
   lambda-base:
     runs-on: ubuntu-latest
     services:
@@ -297,7 +297,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Cache Docker registry
         if: 'false'
         id: cache-registry
@@ -310,7 +310,7 @@ jobs:
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-registry
-            
+
       - name: Cache downloaded software
         id: cache-3rd-party
         uses: actions/cache@v3.3.1
@@ -321,7 +321,7 @@ jobs:
           key: ${{ runner.os }}-al2-3rd-party
           restore-keys: |
             ${{ runner.os }}-al2-3rd-party
-            
+
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2.7.0
@@ -338,7 +338,7 @@ jobs:
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-buildx
-            
+
       - name: Debug docker
         run: |
           echo "Docker ps output:" && docker ps -a && echo
@@ -361,7 +361,7 @@ jobs:
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
-          
+
       - name: Build and export
         uses: docker/build-push-action@v4.1.1
         with:
@@ -378,13 +378,13 @@ jobs:
         if: 'false'
         run: |
           gzip -9v ${{ runner.temp }}/lambda-base.tar
-          
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-base
           path: ${{ runner.temp }}/lambda-base.tar
-      
+
       - name: Build lambda-base image
         if: 'false'
         uses: docker/build-push-action@v4.1.1
@@ -409,13 +409,13 @@ jobs:
           # echo "Docker ps output:" && docker ps -a && echo
           # echo "Docker buildx ls output:" && docker buildx ls && echo
           echo "Docker images output:" && docker images --all && echo
-          
+
       - name: Move cache
         if: 'true'
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
-      
+
       - name: Inspect lambda-base
         run: |
           docker buildx imagetools inspect localhost:5000/lambda-base:latest
@@ -434,7 +434,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Debug registry list - before
         if: 'true'
         run: |
@@ -444,7 +444,7 @@ jobs:
           else
             echo "Directory missing: /opt/post-generation"
           fi
-        
+
       - name: Cache Docker registry
         if: 'false'
         id: cache-registry
@@ -457,7 +457,7 @@ jobs:
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-registry
-      
+
       - name: Debug registry list - after
         if: 'true'
         run: |
@@ -467,12 +467,12 @@ jobs:
           else
             echo "Directory missing: /opt/post-generation"
           fi
-          
+
       - name: String concat
         if: 'false'
         ## Gleaned from https://youtu.be/msCWg2F4sck?t=241
         run: echo ${{ format('{0}/{1}', github.repository_owner, github.job) }}
-        
+
       ## Gleaned from https://www.actionsbyexample.com/context-expressions.html
       - name: To JSON
         if: 'false'
@@ -480,7 +480,7 @@ jobs:
       #-  name: From JSON
       #   env: ${{ fromJSON('{"FAVORITE_FRUIT": "APPLE", "FAVORITE_COLOR": "BLUE"}') }}
       #   run: echo "I would like a ${FAVORITE_COLOR} ${FAVORITE_FRUIT}"
-            
+
       - name: Cache downloaded software
         id: cache-3rd-party
         uses: actions/cache@v3.3.1
@@ -491,13 +491,13 @@ jobs:
           key: ${{ runner.os }}-al2-3rd-party
           restore-keys: |
             ${{ runner.os }}-al2-3rd-party
-            
+
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2.7.0
         with:
           driver-opts: network=host
-          
+
       - name: Download foundation artifact/container
         ## Gleaned from https://docs.docker.com/build/ci/github-actions/share-image-jobs/
         uses: actions/download-artifact@v3.0.1
@@ -515,14 +515,14 @@ jobs:
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-buildx
-            
+
       - name: Load image
         run: |
           docker load --input ${{ runner.temp }}/foundation.tar
           docker image ls -a
           docker image tag foundation:latest localhost:5000/foundation:latest
           docker image push localhost:5000/foundation:latest
-                          
+
       - name: debug
         if: 'false'
         run: |
@@ -538,7 +538,7 @@ jobs:
             echo
           fi
           df -h
-    
+
       - name: Debug docker
         if: 'false'
         run: |
@@ -546,7 +546,7 @@ jobs:
           echo "Docker buildx ls output:" && docker buildx ls && echo
           echo "Docker images output:" && docker images --all && echo
           echo "Docker run:" && docker pull localhost:5000/foundation && echo
-      
+
       ## Gleaned from https://github.com/docker/buildx/issues/1370
       - name: Inspect foundation
         if: 'false'
@@ -555,7 +555,7 @@ jobs:
           docker buildx build -t foundation:latest --pull \
             --output=type=docker --cache-from=type=local,src=${{ runner.temp }}/.buildx-cache \
             --progress plain
-          
+
       - name: Download wgrib2
         #if: steps.cache-builder.outputs.cache-hit != 'true'
         run: |
@@ -567,7 +567,7 @@ jobs:
         if: 'false'
         run: |
           docker buildx imagetools inspect localhost:5000/foundation:latest
-          
+
       - name: Build builder image
         if: 'true'
         uses: docker/build-push-action@v4.1.1
@@ -588,7 +588,7 @@ jobs:
           ## Gleaned from https://docs.docker.com/build/ci/github-actions/named-contexts/
           build-contexts: |
             foundation=docker-image://localhost:5000/foundation:latest
-            
+
       - name: Build and export
         uses: docker/build-push-action@v4.1.1
         with:
@@ -601,13 +601,13 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/builder.tar
           build-contexts: |
             foundation=docker-image://localhost:5000/foundation:latest
-         
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: builder
           path: ${{ runner.temp }}/builder.tar
-          
+
       - name: Build builder image
         if: 'false'
         uses: docker/build-push-action@v4.1.1
@@ -632,13 +632,13 @@ jobs:
           echo "Docker ps output:" && docker ps -a && echo
           echo "Docker buildx ls output:" && docker buildx ls && echo
           echo "Docker images output:" && docker images --all && echo
-          
+
       - name: Move cache
         if: 'false'
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
-      
+
       - name: Inspect foundation
         run: |
           docker buildx imagetools inspect localhost:5000/foundation:latest
@@ -662,7 +662,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Cache Docker registry
         if: 'false'
         id: cache-registry
@@ -675,7 +675,7 @@ jobs:
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-registry
-            
+
       - name: Cache downloaded software
         id: cache-3rd-party
         uses: actions/cache@v3.3.1
@@ -686,19 +686,19 @@ jobs:
           key: ${{ runner.os }}-al2-3rd-party
           restore-keys: |
             ${{ runner.os }}-al2-3rd-party
-            
+
       - name: Download artifact
         uses: actions/download-artifact@v3.0.1
         with:
           name: lambda-base
           path: ${{ runner.temp }}
-          
+
       - name: Download artifact
         uses: actions/download-artifact@v3.0.1
         with:
           name: builder
           path: ${{ runner.temp }}
-            
+
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2.7.0
@@ -714,14 +714,14 @@ jobs:
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-buildx
-            
+
       - name: Load image - lambda-base
         run: |
           docker load --input ${{ runner.temp }}/lambda-base.tar
           docker image ls -a
           docker image tag lambda-base:latest localhost:5000/lambda-base:latest
           docker image push localhost:5000/lambda-base:latest
-          
+
       - name: Load image - builder
         run: |
           docker load --input ${{ runner.temp }}/builder.tar
@@ -777,12 +777,12 @@ jobs:
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
-                
+
       - name: Inspect foundation
         if: 'false'
         run: |
           docker buildx imagetools inspect localhost:5000/foundation:latest
-      
+
       - name: Inspect lambda-base
         if: 'false'
         run: |
@@ -792,7 +792,7 @@ jobs:
         if: 'false'
         run: |
           docker buildx imagetools inspect localhost:5000/builder:latest
-          
+
       - name: Inspect lambda-wgrib2
         run: |
           docker buildx imagetools inspect localhost:5000/lambda-wgrib2:latest
@@ -812,7 +812,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Cache Docker registry
         if: 'false'
         id: cache-registry
@@ -825,7 +825,7 @@ jobs:
           key: ${{ runner.os }}-al2-registry-${{ github.job }}
           restore-keys: |
             ${{ runner.os }}-al2-registry
-            
+
       - name: Cache downloaded software
         id: cache-3rd-party
         uses: actions/cache@v3.3.1
@@ -836,13 +836,13 @@ jobs:
           key: ${{ runner.os }}-al2-3rd-party
           restore-keys: |
             ${{ runner.os }}-al2-3rd-party
-            
+
       - name: Download artifact
         uses: actions/download-artifact@v3.0.1
         with:
           name: builder
           path: ${{ runner.temp }}
-            
+
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2.7.0
@@ -866,7 +866,7 @@ jobs:
           docker image ls -a
           docker image tag builder:latest localhost:5000/builder:latest
           docker image push localhost:5000/builder:latest
-      
+
       - name: Download pywgrib2_s.py
         run: |
           make 3rd-party/pywgrib2_s.py
@@ -939,7 +939,7 @@ jobs:
           echo "tag=${GITHUB_REF#refs/*/}" >> ${GITHUB_OUTPUT}
           echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
-      
+
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
@@ -972,7 +972,7 @@ jobs:
           echo '${{ toJSON(steps.meta-wgrib2.outputs) }}'
           echo
           env | sort
-          
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta-pywgrib2
         uses: docker/metadata-action@v4.6.0
@@ -984,3 +984,24 @@ jobs:
           echo '${{ toJSON(steps.meta-pywgrib2.outputs) }}'
           echo
           env | sort
+
+  ## Gleaned from 
+  job1:
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
+    steps:
+      - id: step1
+        run: echo "test=hello" >> "$GITHUB_OUTPUT"
+      - id: step2
+        run: echo "test=world" >> "$GITHUB_OUTPUT"
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+      - env:
+          OUTPUT1: ${{needs.job1.outputs.output1}}
+          OUTPUT2: ${{needs.job1.outputs.output2}}
+        run: echo "$OUTPUT1 $OUTPUT2"
