@@ -765,7 +765,8 @@ jobs:
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
-          outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
+          ## outputs: type=docker and push can not be used together  
+          # outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
           build-contexts: |
             builder=docker-image://localhost:5000/lambda-base:latest
             builder=docker-image://localhost:5000/builder:latest
@@ -790,7 +791,7 @@ jobs:
             builder=docker-image://localhost:5000/lambda-wgrib2:latest
 
       - name: Upload artifact
-        if: 'true'
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-wgrib2
