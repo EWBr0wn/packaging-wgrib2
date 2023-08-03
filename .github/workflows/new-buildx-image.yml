@@ -818,7 +818,7 @@ jobs:
           echo "lambda-wgrib2:latest"
           docker image save \
           --output ${{ runner.temp }}/lambda-wgrib2.tar \
-          lambda-wgrib2:latest
+          localhost:5000/lambda-wgrib2:latest
       - name: debug4 lambda-wgrib2
         run: |
           ls -l ${{ runner.temp }}/lambda-wgrib2.tar
