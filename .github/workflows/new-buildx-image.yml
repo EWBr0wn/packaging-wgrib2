@@ -788,6 +788,11 @@ jobs:
             builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-wgrib2:latest
 
+      - name: Upload image
+        uses: ishworkh/container-image-artifact-upload@v1.0.0
+        with:
+          image: lambda-wgrib2:latest
+
       - name: Upload artifact
         if: 'false'
         uses: actions/upload-artifact@v3.1.2
