@@ -790,15 +790,23 @@ jobs:
             builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-wgrib2:latest
 
+      - name: List image from BuildX
+        if: 'true'
+        run: |
+          docker buildx ls \
+            --builder ${{ steps.buildx.outputs.name }}
+
       - name: Place image from BuildX to tar file
+        if: 'false'
         run: |
           docker buildx imagetools create \
             --tag lambda-wgrib2:latest \
-            --output type=tar,dest=${{ runner.temp }}/lambda-wgrib2.tar
+            --builder ${{ steps.buildx.outputs.name }} \
+            # --output type=tar,dest=${{ runner.temp }}/lambda-wgrib2.tar
             lambda-wgrib2:latest
 
       - name: Upload artifact
-        if: 'true'
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-wgrib2
