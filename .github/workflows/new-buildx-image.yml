@@ -834,7 +834,15 @@ jobs:
 
       - name: Inspect lambda-wgrib2
         run: |
-          docker buildx imagetools inspect localhost:5000/lambda-wgrib2:latest
+          echo "localhost:5000/lambda-wgrib2:latest"
+          docker buildx imagetools inspect \
+          --builder ${{ steps.buildx.outputs.name }} \
+          localhost:5000/lambda-wgrib2:latest
+          echo
+          echo "lambda-wgrib2:latest"
+          docker buildx imagetools inspect \
+          --builder ${{ steps.buildx.outputs.name }} \
+          lambda-wgrib2:latest
 
   lambda-pywgrib2:
     runs-on: ubuntu-latest
