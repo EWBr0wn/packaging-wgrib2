@@ -179,6 +179,8 @@ jobs:
           # Set the desired build target here
           target: foundation
           push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: localhost:5000/foundation:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
@@ -195,6 +197,8 @@ jobs:
           file: Dockerfile
           # Set the desired build target here
           target: foundation
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: foundation:latest
           outputs: type=docker,dest=${{ runner.temp }}/foundation.tar
 
@@ -215,6 +219,8 @@ jobs:
           # Set the desired build target here
           target: foundation
           push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: localhost:5000/foundation:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=gha
@@ -354,6 +360,8 @@ jobs:
           # Set the desired build target here
           target: lambda-base
           push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: localhost:5000/lambda-base:latest
           # tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
@@ -370,6 +378,8 @@ jobs:
           file: Dockerfile
           # Set the desired build target here
           target: lambda-base
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: lambda-base:latest
           outputs: type=docker,dest=${{ runner.temp }}/lambda-base.tar
 
@@ -395,6 +405,8 @@ jobs:
           # Set the desired build target here
           target: lambda-base
           push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: localhost:5000/lambda-base:latest
           # tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=gha
@@ -578,6 +590,8 @@ jobs:
           # Set the desired build target here
           target: builder
           push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: localhost:5000/builder:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
@@ -597,6 +611,8 @@ jobs:
           file: Dockerfile
           # Set the desired build target here
           target: builder
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: builder:latest
           outputs: type=docker,dest=${{ runner.temp }}/builder.tar
           build-contexts: |
@@ -618,6 +634,8 @@ jobs:
           # Set the desired build target here
           target: builder
           push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: localhost:5000/builder:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=gha
@@ -738,6 +756,8 @@ jobs:
           # Set the desired build target here
           target: lambda-wgrib2
           push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: localhost:5000/lambda-wgrib2:latest
           #tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
@@ -758,6 +778,8 @@ jobs:
           file: Dockerfile
           # Set the desired build target here
           target: lambda-wgrib2
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: lambda-wgrib2:latest
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-new
           outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
@@ -901,6 +923,8 @@ jobs:
           file: Dockerfile
           # Set the desired build target here
           target: lambda-pywgrib2
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
           tags: lambda-pywgrib2:latest
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-new
           outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2.tar
