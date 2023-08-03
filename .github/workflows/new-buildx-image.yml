@@ -765,12 +765,13 @@ jobs:
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
           build-contexts: |
             builder=docker-image://localhost:5000/lambda-base:latest
             builder=docker-image://localhost:5000/builder:latest
 
       - name: Build and export
-        if: 'true'
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -781,7 +782,7 @@ jobs:
           # see https://github.com/docker/build-push-action/issues/820
           platforms: linux/amd64
           tags: lambda-wgrib2:latest
-          # cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-new
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-new
           outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
           build-contexts: |
             builder=docker-image://localhost:5000/lambda-base:latest
@@ -789,7 +790,7 @@ jobs:
             builder=docker-image://localhost:5000/lambda-wgrib2:latest
 
       - name: Upload artifact
-        if: 'false'
+        if: 'true'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-wgrib2
