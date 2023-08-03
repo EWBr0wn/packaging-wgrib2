@@ -805,17 +805,22 @@ jobs:
             # --output type=tar,dest=${{ runner.temp }}/lambda-wgrib2.tar
             lambda-wgrib2:latest
 
-      - name: Inspect lambda-wgrib2
+      - name: debug1 lambda-wgrib2
         run: |
           echo "localhost:5000/lambda-wgrib2:latest"
           docker image pull \
           localhost:5000/lambda-wgrib2:latest
-          echo
+      - name: debug2 lambda-wgrib2
+        run: |
+          docker image ls -a
+      - name: debug3 lambda-wgrib2
+        run: |
           echo "lambda-wgrib2:latest"
           docker image save \
           --output ${{ runner.temp }}/lambda-wgrib2.tar \
           lambda-wgrib2:latest
-          echo
+      - name: debug4 lambda-wgrib2
+        run: |
           ls -l ${{ runner.temp }}/lambda-wgrib2.tar
 
       - name: Upload artifact
