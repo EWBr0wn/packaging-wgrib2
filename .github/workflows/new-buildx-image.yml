@@ -805,8 +805,21 @@ jobs:
             # --output type=tar,dest=${{ runner.temp }}/lambda-wgrib2.tar
             lambda-wgrib2:latest
 
+      - name: Inspect lambda-wgrib2
+        run: |
+          echo "localhost:5000/lambda-wgrib2:latest"
+          docker image pull \
+          localhost:5000/lambda-wgrib2:latest
+          echo
+          echo "lambda-wgrib2:latest"
+          docker image save \
+          --output ${{ runner.temp }}/lambda-wgrib2.tar \
+          lambda-wgrib2:latest
+          echo
+          ls -l ${{ runner.temp }}/lambda-wgrib2.tar
+
       - name: Upload artifact
-        if: 'false'
+        if: 'true'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-wgrib2
@@ -831,18 +844,6 @@ jobs:
         if: 'false'
         run: |
           docker buildx imagetools inspect localhost:5000/builder:latest
-
-      - name: Inspect lambda-wgrib2
-        run: |
-          echo "localhost:5000/lambda-wgrib2:latest"
-          docker buildx imagetools inspect \
-          --builder ${{ steps.buildx.outputs.name }} \
-          localhost:5000/lambda-wgrib2:latest
-          echo
-          echo "lambda-wgrib2:latest"
-          docker buildx imagetools inspect \
-          --builder ${{ steps.buildx.outputs.name }} \
-          lambda-wgrib2:latest
 
   lambda-pywgrib2:
     runs-on: ubuntu-latest
