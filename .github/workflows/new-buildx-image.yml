@@ -974,7 +974,7 @@ jobs:
         run: |
           docker load --input ${{ runner.temp }}/lambda-wgrib2.tar
           docker image ls -a
-          docker image tag lambda-wgrib2:latest localhost:5000/lambda-wgrib2:latest
+          docker image tag localhost:5000/lambda-wgrib2:latest lambda-wgrib2:latest
           docker image push localhost:5000/lambda-wgrib2:latest
 
       - name: Dump GitHub context
@@ -1018,7 +1018,7 @@ jobs:
         run: |
           docker load --input ${{ runner.temp }}/lambda-pywgrib2.tar
           docker image ls -a
-          docker image tag lambda-pywgrib2:latest localhost:5000/lambda-pywgrib2:latest
+          docker image tag localhost:5000/lambda-pywgrib2:latest lambda-pywgrib2:latest
           docker image push localhost:5000/lambda-pywgrib2:latest
 
       - name: Extract metadata (tags, labels) for Docker
@@ -1045,7 +1045,7 @@ jobs:
       - id: step2
         run: echo "test=world" >> "$GITHUB_OUTPUT"
       - id: step3
-        run: echo "jstext='{"image":"lambda-wgrib2","base":{"image":"public.ecr.aws/lambda/provided","version":"al2.2023.03.21.13-x86_64"},"software":{"wgrib2":"v3.1.2","pywgrib2_s":null}}'" >> "$GITHUB_OUTPUT"
+        run: echo "jstext='{\"image\":\"lambda-wgrib2\",\"base\":{\"image\":\"public.ecr.aws/lambda/provided\",\"version\":\"al2.2023.03.21.13-x86_64\"},\"software\":{\"wgrib2\":\"v3.1.2\",\"pywgrib2_s\":null}}'" >> "$GITHUB_OUTPUT"
   job2:
     runs-on: ubuntu-latest
     needs: job1
