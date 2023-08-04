@@ -1031,6 +1031,52 @@ jobs:
         run: |
           echo '${{ toJSON(steps.meta-pywgrib2.outputs) }}'
 
+      # Extract metadata (tags, labels) for Docker lambda-wgrib2
+      # https://github.com/docker/metadata-action
+      - name: Extract metadata (tags, labels) for Docker lambda-wgrib2
+        id: meta-wgrib2-b
+        uses: docker/metadata-action@v4.6.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-wgrib2
+          labels: |
+            org.opencontainers.image.description=Build of lambda-wgrib2
+            org.opencontainers.image.title=lambda-wgrib2
+          tags: |
+            # minimal (short sha)
+            type=sha
+            # full length sha
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern=v{{version}}
+
+      # Extract metadata (tags, labels) for Docker lambda-pywgrib2
+      # https://github.com/docker/metadata-action
+      - name: Extract metadata (tags, labels) for Docker lambda-pywgrib2
+        id: meta-pywgrib2-b
+        uses: docker/metadata-action@v4.6.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2
+          labels: |
+            org.opencontainers.image.description=Build of lambda-pywgrib2
+            org.opencontainers.image.title=lambda-pywgrib2
+          tags: |
+            # minimal (short sha)
+            type=sha
+            # full length sha
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern=v{{version}}
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2.2.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
   ## Gleaned from https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
   job1:
     runs-on: ubuntu-latest
