@@ -133,7 +133,8 @@ jobs:
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
-            ${{ runner.os }}-al2-buildx
+            ${{ runner.os }}-al2-buildx-${{ github.job }}
+            ${{ runner.os }}-al2-buildx-
 
       - name: debug
         if: 'false'
@@ -316,7 +317,8 @@ jobs:
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
-            ${{ runner.os }}-al2-buildx
+            ${{ runner.os }}-al2-buildx-${{ github.job }}
+            ${{ runner.os }}-al2-buildx-
 
       - name: Debug docker
         run: |
@@ -499,7 +501,8 @@ jobs:
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
-            ${{ runner.os }}-al2-buildx
+            ${{ runner.os }}-al2-buildx-${{ github.job }}
+            ${{ runner.os }}-al2-buildx-
 
       - name: Load image
         run: |
@@ -704,7 +707,8 @@ jobs:
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
-            ${{ runner.os }}-al2-buildx
+            ${{ runner.os }}-al2-buildx-${{ github.job }}
+            ${{ runner.os }}-al2-buildx-
 
       - name: Load image - lambda-base
         run: |
@@ -856,7 +860,8 @@ jobs:
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
-            ${{ runner.os }}-al2-buildx
+            ${{ runner.os }}-al2-buildx-${{ github.job }}
+            ${{ runner.os }}-al2-buildx-
 
       - name: Load image - builder
         run: |
@@ -984,7 +989,8 @@ jobs:
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
-            ${{ runner.os }}-al2-buildx
+            ${{ runner.os }}-al2-buildx-${{ github.job }}
+            ${{ runner.os }}-al2-buildx-
 
       - name: Set variables
         id: vars
@@ -1130,7 +1136,7 @@ jobs:
           labels: ${{ steps.meta-wgrib2-b.outputs.labels }}
           #tags: localhost:5000/lambda-wgrib2:latest
           tags: ${{ steps.meta-wgrib2-b.outputs.tags }}
-          #cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
@@ -1155,7 +1161,7 @@ jobs:
           labels: ${{ steps.meta-pywgrib2-b.outputs.labels }}
           #tags: localhost:5000/lambda-pywgrib2:latest
           tags: ${{ steps.meta-pywgrib2-b.outputs.tags }}
-          #cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
           # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
