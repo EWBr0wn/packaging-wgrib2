@@ -960,6 +960,31 @@ jobs:
       sha: ${{ steps.vars.outputs.sha }}
       repoowner: ${{ steps.vars.outputs.repoowner }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache downloaded software
+        id: cache-3rd-party
+        uses: actions/cache@v3.3.1
+        with:
+          path: |
+            ${{ github.workspace }}/3rd-party/*
+          # Key is named differently to avoid collision
+          key: ${{ runner.os }}-al2-3rd-party
+          restore-keys: |
+            ${{ runner.os }}-al2-3rd-party
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3.3.1
+        with:
+          path: |
+            ${{ runner.temp }}/.buildx-cache
+            ./3rd-party/pywgrib2_s.py
+          # Key is named differently to avoid collision
+          key: ${{ runner.os }}-al2-buildx-${{ github.job }}
+          restore-keys: |
+            ${{ runner.os }}-al2-buildx
+
       - name: Set variables
         id: vars
         run: |
@@ -1011,6 +1036,7 @@ jobs:
         run: |
           echo '${{ github.ref_name }}'
           echo '${{ toJSON(steps.meta-wgrib2.outputs) }}'
+          ls -lR 3rd-party
 
       - name: Download artifact
         uses: actions/download-artifact@v3.0.1
@@ -1086,31 +1112,6 @@ jobs:
         uses: docker/setup-buildx-action@v2.7.0
         with:
           driver-opts: network=host
-
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache downloaded software
-        id: cache-3rd-party
-        uses: actions/cache@v3.3.1
-        with:
-          path: |
-            ${{ github.workspace }}/3rd-party/*
-          # Key is named differently to avoid collision
-          key: ${{ runner.os }}-al2-3rd-party
-          restore-keys: |
-            ${{ runner.os }}-al2-3rd-party
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3.3.1
-        with:
-          path: |
-            ${{ runner.temp }}/.buildx-cache
-            ./3rd-party/pywgrib2_s.py
-          # Key is named differently to avoid collision
-          key: ${{ runner.os }}-al2-buildx-${{ github.job }}
-          restore-keys: |
-            ${{ runner.os }}-al2-buildx
 
       - name: Build and publish lambda-wgrib2 image
         if: 'false'
