@@ -989,6 +989,8 @@ jobs:
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
+            ${{ runner.os }}-al2-buildx-lambda-wgrib2
+            ${{ runner.os }}-al2-buildx-lambda-pywgrib2
             ${{ runner.os }}-al2-buildx-${{ github.job }}
             ${{ runner.os }}-al2-buildx-
 
