@@ -17,6 +17,10 @@ concurrency:
   group: ci-tests-${{ github.ref }}-1
   cancel-in-progress: true
 
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+
 jobs:
     ## Gleaned from https://docs.docker.com/build/ci/github-actions/local-registry/
     #
@@ -1107,6 +1111,31 @@ jobs:
           # outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
           build-contexts: |
             builder=docker-image://localhost:5000/lambda-wgrib2:latest
+
+      - name: Build and publish lambda-pywgrib2 image
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-pywgrib2
+          push: true
+          #push: github.event_name != 'pull_request'
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          labels: ${{ steps.meta-pywgrib2-b.outputs.labels }}
+          #tags: localhost:5000/lambda-pywgrib2:latest
+          tags: ${{ steps.meta-pywgrib2-b.outputs.tags }}
+          #cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          #cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
+          ## outputs: type=docker and push can not be used together  
+          # outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
+          build-contexts: |
+            builder=docker-image://localhost:5000/lambda-pywgrib2:latest
 
   ## Gleaned from https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
   job1:
