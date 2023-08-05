@@ -1088,6 +1088,10 @@ jobs:
             type=ref,event=branch
             type=semver,pattern=v{{version}}
 
+      - name: Download pywgrib2_s.py (OK: I give up)
+        run: |
+          make 3rd-party/pywgrib2_s.py
+
       # Extract metadata (tags, labels) for Docker lambda-pywgrib2
       # https://github.com/docker/metadata-action
       - name: Extract metadata (tags, labels) for Docker lambda-pywgrib2
