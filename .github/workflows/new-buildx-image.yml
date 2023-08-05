@@ -1091,6 +1091,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build and publish lambda-wgrib2 image
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
