@@ -1039,7 +1039,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-wgrib2
           labels: |
-            org.opencontainers.image.description=Build of lambda-wgrib2
+            org.opencontainers.image.description=Build of lambda-wgrib2 from AWS Lambda image
             org.opencontainers.image.title=lambda-wgrib2
           tags: |
             # minimal (short sha)
@@ -1057,7 +1057,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2
           labels: |
-            org.opencontainers.image.description=Build of lambda-pywgrib2
+            org.opencontainers.image.description=Build of lambda-pywgrib2 from AWS Python Lambda image
             org.opencontainers.image.title=lambda-pywgrib2
           tags: |
             # minimal (short sha)
@@ -1070,12 +1070,43 @@ jobs:
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
+        #if: github.event_name != 'pull_request'
         uses: docker/login-action@v2.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.7.0
+        with:
+          driver-opts: network=host
+
+      - name: Build and publish lambda-wgrib2 image
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-wgrib2
+          push: true
+          #push: github.event_name != 'pull_request'
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          labels: ${{ steps.meta-wgrib2-b.outputs.labels }}
+          #tags: localhost:5000/lambda-wgrib2:latest
+          tags: ${{ steps.meta-wgrib2-b.outputs.tags }}
+          #cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          #cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
+          ## outputs: type=docker and push can not be used together  
+          # outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
+          build-contexts: |
+            builder=docker-image://localhost:5000/lambda-wgrib2:latest
 
   ## Gleaned from https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
   job1:
