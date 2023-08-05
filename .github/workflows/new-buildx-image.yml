@@ -1088,7 +1088,7 @@ jobs:
             type=ref,event=branch
             type=semver,pattern=v{{version}}
 
-      - name: Download pywgrib2_s.py (OK: I give up)
+      - name: Download pywgrib2_s.py but why??
         run: |
           make 3rd-party/pywgrib2_s.py
 
