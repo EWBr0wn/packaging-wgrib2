@@ -1041,12 +1041,6 @@ jobs:
         with:
           images: ${{ steps.vars.outputs.repoowner }}/lambda-wgrib2
 
-      - name: Debug
-        run: |
-          echo '${{ github.ref_name }}'
-          echo '${{ toJSON(steps.meta-wgrib2.outputs) }}'
-          ls -lR 3rd-party
-
       - name: Download artifact
         uses: actions/download-artifact@v3.0.1
         with:
@@ -1091,6 +1085,12 @@ jobs:
       - name: Download pywgrib2_s.py but why??
         run: |
           make 3rd-party/pywgrib2_s.py
+     
+      - name: Debug
+        run: |
+          echo '${{ github.ref_name }}'
+          echo '${{ toJSON(steps.meta-wgrib2.outputs) }}'
+          ls -lR 3rd-party
 
       # Extract metadata (tags, labels) for Docker lambda-pywgrib2
       # https://github.com/docker/metadata-action
