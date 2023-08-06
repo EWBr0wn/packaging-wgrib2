@@ -1008,6 +1008,13 @@ jobs:
           name: lambda-wgrib2
           path: ${{ runner.temp }}
 
+      - name: Load image - builder
+        run: |
+          docker load --input ${{ runner.temp }}/builder.tar
+          docker image ls -a
+          docker image tag builder:latest localhost:5000/builder:latest
+          docker image push localhost:5000/builder:latest
+
       - name: Load image - lambda-wgrib2
         run: |
           docker load --input ${{ runner.temp }}/lambda-wgrib2.tar
