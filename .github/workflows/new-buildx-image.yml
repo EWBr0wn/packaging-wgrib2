@@ -1002,10 +1002,10 @@ jobs:
           echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
 
-      - name: Download artifact
+      - name: Download artifact - builder
         uses: actions/download-artifact@v3.0.1
         with:
-          name: lambda-wgrib2
+          name: builder
           path: ${{ runner.temp }}
 
       - name: Load image - builder
@@ -1014,6 +1014,12 @@ jobs:
           docker image ls -a
           docker image tag builder:latest localhost:5000/builder:latest
           docker image push localhost:5000/builder:latest
+
+      - name: Download artifact - lambda-wgrib2
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: lambda-wgrib2
+          path: ${{ runner.temp }}
 
       - name: Load image - lambda-wgrib2
         run: |
