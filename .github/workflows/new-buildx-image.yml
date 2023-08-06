@@ -1163,6 +1163,7 @@ jobs:
           ## outputs: type=docker and push can not be used together  
           # outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
           build-contexts: |
+            builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-wgrib2:latest
 
       - name: Build and publish lambda-pywgrib2 image
@@ -1188,6 +1189,7 @@ jobs:
           ## outputs: type=docker and push can not be used together  
           # outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
           build-contexts: |
+            builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-pywgrib2:latest
 
   ## Gleaned from https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
