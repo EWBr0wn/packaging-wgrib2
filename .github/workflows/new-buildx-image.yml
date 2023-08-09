@@ -1027,6 +1027,7 @@ jobs:
           docker image ls -a
           docker image tag localhost:5000/lambda-wgrib2:latest lambda-wgrib2:latest
           docker image push localhost:5000/lambda-wgrib2:latest
+          docker run --rm lambda-wgrib2:latest ls -l /var/task/grib2/lib/libwgrib2.so
 
       - name: Dump GitHub context
         env:
