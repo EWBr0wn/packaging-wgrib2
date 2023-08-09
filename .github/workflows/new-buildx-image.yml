@@ -1014,6 +1014,7 @@ jobs:
           docker image ls -a
           docker image tag builder:latest localhost:5000/builder:latest
           docker image push localhost:5000/builder:latest
+          docker run --rm builder:latest ls /var/task/grib2/lib/libwgrib2.so
 
       - name: Download artifact - lambda-wgrib2
         uses: actions/download-artifact@v3.0.1
@@ -1026,8 +1027,7 @@ jobs:
           docker load --input ${{ runner.temp }}/lambda-wgrib2.tar
           docker image ls -a
           docker image tag localhost:5000/lambda-wgrib2:latest lambda-wgrib2:latest
-          docker image push localhost:5000/lambda-wgrib2:latest
-          docker run --rm lambda-wgrib2:latest ls -l /var/task/grib2/lib/libwgrib2.so
+          docker image push localhost:5000/lambda-wgrib2:lates
 
       - name: Dump GitHub context
         env:
@@ -1067,6 +1067,7 @@ jobs:
           docker image ls -a
           docker image tag localhost:5000/lambda-pywgrib2:latest lambda-pywgrib2:latest
           docker image push localhost:5000/lambda-pywgrib2:latest
+          docker run --rm lambda-pywgrib2:latest ls /var/task/grib2/lib/libwgrib2.so
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta-pywgrib2
