@@ -755,10 +755,11 @@ jobs:
             --builder ${{ steps.buildx.outputs.name }}
 
       - name: debug1 lambda-wgrib2
+        if: 'false'
         run: |
           echo "localhost:5000/lambda-wgrib2:latest"
           docker image pull \
-          localhost:5000/lambda-wgrib2:latest
+            localhost:5000/lambda-wgrib2:latest
       - name: debug2 lambda-wgrib2
         run: |
           docker image ls -a
@@ -766,8 +767,8 @@ jobs:
         run: |
           echo "lambda-wgrib2:latest"
           docker image save \
-          --output ${{ runner.temp }}/lambda-wgrib2.tar \
-          localhost:5000/lambda-wgrib2:latest
+            --output ${{ runner.temp }}/lambda-wgrib2.tar \
+            localhost:5000/lambda-wgrib2:latest
       - name: debug4 lambda-wgrib2
         run: |
           ls -l ${{ runner.temp }}/lambda-wgrib2.tar
