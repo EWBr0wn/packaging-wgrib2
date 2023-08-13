@@ -755,7 +755,7 @@ jobs:
             --builder ${{ steps.buildx.outputs.name }}
 
       - name: debug1 lambda-wgrib2
-        if: 'false'
+        if: 'true'
         run: |
           echo "localhost:5000/lambda-wgrib2:latest"
           docker image pull \
