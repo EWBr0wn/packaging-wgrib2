@@ -1028,7 +1028,7 @@ jobs:
           docker load --input ${{ runner.temp }}/lambda-wgrib2.tar
           docker image ls -a
           docker image tag localhost:5000/lambda-wgrib2:latest lambda-wgrib2:latest
-          docker image push localhost:5000/lambda-wgrib2:lates
+          docker image push localhost:5000/lambda-wgrib2:latest
 
       - name: Dump GitHub context
         env:
