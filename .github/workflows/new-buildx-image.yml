@@ -873,6 +873,7 @@ jobs:
       - name: Download pywgrib2_s.py
         run: |
           make 3rd-party/pywgrib2_s.py
+          ls -l 3rd-party
 
       - name: Build lambda-pywgrib2 image
         uses: docker/build-push-action@v4.1.1
@@ -1102,6 +1103,7 @@ jobs:
       - name: Download pywgrib2_s.py but why??
         run: |
           make 3rd-party/pywgrib2_s.py
+          ls -l 3rd-party
      
       - name: Debug
         run: |
