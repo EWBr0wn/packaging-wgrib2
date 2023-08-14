@@ -877,6 +877,7 @@ jobs:
           ls -l 3rd-party
 
       - name: Build lambda-pywgrib2 image
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
