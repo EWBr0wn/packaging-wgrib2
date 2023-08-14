@@ -1148,7 +1148,7 @@ jobs:
           driver-opts: network=host
 
       - name: Build and publish lambda-wgrib2 image
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
