@@ -137,7 +137,7 @@ jobs:
             ${{ runner.os }}-al2-buildx-
 
       - name: debug .buildx-cache
-        if: 'true'
+        if: 'false'
         run: |
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
