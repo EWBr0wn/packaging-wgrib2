@@ -142,12 +142,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: debug
         if: 'false'
@@ -269,12 +269,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Move cache
         if: 'true'
@@ -352,12 +352,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Debug docker
         run: |
@@ -442,12 +442,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Move cache
         if: 'true'
@@ -562,12 +562,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Load image
         run: |
@@ -698,12 +698,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Move cache
         if: 'false'
@@ -794,12 +794,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Load image - lambda-base
         run: |
@@ -881,12 +881,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Move cache
         run: |
@@ -978,12 +978,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Load image - builder
         run: |
@@ -1072,12 +1072,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Move cache
         run: |
@@ -1141,12 +1141,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Set variables
         id: vars
@@ -1318,12 +1318,12 @@ jobs:
           echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
           echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
           ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
-          echo "Diff buildx-cache directories:"
-          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
-            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
-          else
-            echo
-          fi
+          #echo "Diff buildx-cache directories:"
+          #if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+          #  diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          #else
+          #  echo
+          #fi
 
       - name: Debug buildx environment
         run: |
