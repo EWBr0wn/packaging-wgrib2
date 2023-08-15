@@ -754,6 +754,10 @@ jobs:
           docker buildx ls \
             --builder ${{ steps.buildx.outputs.name }}
 
+      - name: Debug buildx environment
+        run: |
+          docker buildx du --verbose --builder ${{ steps.buildx.outputs.name }}
+
       - name: debug1 lambda-wgrib2
         if: 'true'
         run: |
@@ -915,6 +919,10 @@ jobs:
           build-contexts: |
             builder=docker-image://localhost:5000/builder:latest
             builder=docker-image://localhost:5000/lambda-pywgrib2:latest
+
+      - name: Debug buildx environment
+        run: |
+          docker buildx du --verbose --builder ${{ steps.buildx.outputs.name }}
 
       - name: debug1 lambda-pywgrib2
         run: |
