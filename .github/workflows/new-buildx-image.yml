@@ -263,6 +263,19 @@ jobs:
             diff -r --brief /tmp/.buildx-cache /tmp/.buildx-cache-new
           fi
 
+      - name: debug .buildx-cache
+        if: 'true'
+        run: |
+          echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
+          echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
+          ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
+          echo "Diff buildx-cache directories:"
+          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          else
+            echo
+          fi
+
       - name: Move cache
         if: 'true'
         run: |
@@ -422,6 +435,19 @@ jobs:
           # echo "Docker ps output:" && docker ps -a && echo
           # echo "Docker buildx ls output:" && docker buildx ls && echo
           echo "Docker images output:" && docker images --all && echo
+
+      - name: debug .buildx-cache
+        if: 'true'
+        run: |
+          echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
+          echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
+          ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
+          echo "Diff buildx-cache directories:"
+          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          else
+            echo
+          fi
 
       - name: Move cache
         if: 'true'
@@ -666,6 +692,19 @@ jobs:
           echo "Docker buildx ls output:" && docker buildx ls && echo
           echo "Docker images output:" && docker images --all && echo
 
+      - name: debug .buildx-cache
+        if: 'true'
+        run: |
+          echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
+          echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
+          ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
+          echo "Diff buildx-cache directories:"
+          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          else
+            echo
+          fi
+
       - name: Move cache
         if: 'false'
         run: |
@@ -835,6 +874,19 @@ jobs:
         with:
           name: lambda-wgrib2
           path: ${{ runner.temp }}/lambda-wgrib2.tar
+
+      - name: debug .buildx-cache
+        if: 'true'
+        run: |
+          echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
+          echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
+          ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
+          echo "Diff buildx-cache directories:"
+          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          else
+            echo
+          fi
 
       - name: Move cache
         run: |
@@ -1014,6 +1066,19 @@ jobs:
           name: lambda-pywgrib2
           path: ${{ runner.temp }}/lambda-pywgrib2.tar
 
+      - name: debug .buildx-cache
+        if: 'true'
+        run: |
+          echo "List 3rd-party directory:" && ls -lah 3rd-party && echo
+          echo "List buildx-cache directories:" && ls -lah ${{ runner.temp }}/.buildx-cache* && echo
+          ls -lah ${{ runner.temp }}/.buildx-cache*/{blobs,ingest}/sha256 && echo
+          echo "Diff buildx-cache directories:"
+          if [ -d ${{ runner.temp }}/.buildx-cache-new ] ; then
+            diff -r --brief ${{ runner.temp }}/.buildx-cache ${{ runner.temp }}/.buildx-cache-new
+          else
+            echo
+          fi
+
       - name: Move cache
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
@@ -1065,8 +1130,8 @@ jobs:
           # Key is named differently to avoid collision
           key: ${{ runner.os }}-al2-buildx-${{ github.job }}
           restore-keys: |
-            ${{ runner.os }}-al2-buildx-lambda-wgrib2
             ${{ runner.os }}-al2-buildx-lambda-pywgrib2
+            ${{ runner.os }}-al2-buildx-lambda-wgrib2
             ${{ runner.os }}-al2-buildx-${{ github.job }}
             ${{ runner.os }}-al2-buildx-
 
@@ -1190,6 +1255,7 @@ jobs:
 
       - name: Download pywgrib2_s.py but why??
         run: |
+          ls -l 3rd-party
           make 3rd-party/pywgrib2_s.py
           ls -l 3rd-party
      
@@ -1234,6 +1300,7 @@ jobs:
           driver-opts: network=host
 
       - name: Cache Docker layers
+        if: 'false'
         uses: actions/cache@v3.3.1
         with:
           path: |
