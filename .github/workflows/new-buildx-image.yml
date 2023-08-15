@@ -1155,6 +1155,18 @@ jobs:
         with:
           driver-opts: network=host
 
+      - name: Cache Docker layers
+        uses: actions/cache@v3.3.1
+        with:
+          path: |
+            ${{ runner.temp }}/.buildx-cache
+            ./3rd-party/pywgrib2_s.py
+          # Key is named differently to avoid collision
+          key: ${{ runner.os }}-al2-buildx-${{ github.job }}
+          restore-keys: |
+            ${{ runner.os }}-al2-buildx-${{ github.job }}
+            ${{ runner.os }}-al2-buildx-
+
       - name: Debug buildx environment
         run: |
           docker buildx du --verbose --builder ${{ steps.buildx.outputs.name }}
