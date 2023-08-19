@@ -51,6 +51,7 @@ jobs:
           buildkitd-flags: --debug
 
       - name: Cache Docker layers
+        if: 'false'
         id: cache-foundation
         uses: actions/cache@v3.3.1
         with:
@@ -70,6 +71,7 @@ jobs:
           fi
 
       - name: Upload cmake.tgz
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: cached-cmake.tgz
@@ -77,7 +79,7 @@ jobs:
 
        ## Gleaned from https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
       - name: Build foundation image
-        if: 'true'
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -97,6 +99,7 @@ jobs:
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
 
       - name: Build and export
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -110,14 +113,15 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/foundation.tar
 
       - name: Upload artifact
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: foundation
           path: ${{ runner.temp }}/foundation.tar
 
       ## Gleaned from https://www.hyperdx.io/blog/docker-buildx-cache-with-github-actions
-      - name: Build foundation image
-        if: 'false'
+      - name: Build foundation image - gha
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -137,7 +141,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Move cache after foundation build
-        if: 'true'
+        if: 'false'
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
@@ -145,7 +149,7 @@ jobs:
 #  lambda-base:
 
       - name: Build lambda-base image
-        if: 'true'
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -165,6 +169,7 @@ jobs:
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
 
       - name: Build and export
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -178,13 +183,14 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/lambda-base.tar
 
       - name: Upload artifact
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-base
           path: ${{ runner.temp }}/lambda-base.tar
 
-      - name: Build lambda-base image
-        if: 'false'
+      - name: Build lambda-base image - gha
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -204,7 +210,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Move cache
-        if: 'true'
+        if: 'false'
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
@@ -219,7 +225,7 @@ jobs:
           fi
 
       - name: Build builder image
-        if: 'true'
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -242,6 +248,7 @@ jobs:
             foundation=docker-image://localhost:5000/foundation:latest
 
       - name: Build and export
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -257,13 +264,14 @@ jobs:
             foundation=docker-image://localhost:5000/foundation:latest
 
       - name: Upload artifact
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: builder
           path: ${{ runner.temp }}/builder.tar
 
-      - name: Build builder image
-        if: 'false'
+      - name: Build builder image - gha
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -287,3 +295,301 @@ jobs:
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
+
+  publish:
+    runs-on: ubuntu-latest
+    services:
+      registry-service:
+        image: registry:2
+        ports:
+          - 5000:5000
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+    needs:
+      - foundation
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download artifact
+        if: 'false'
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: builder
+          path: ${{ runner.temp }}
+
+      - name: Download artifact
+        if: 'false'
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: lambda-base
+          path: ${{ runner.temp }}
+
+      - name: Download cmake
+        if: 'true'
+        run: |
+          if [ ! -f 3rd-party/cmake.tgz ] ; then
+            make 3rd-party/cmake.tgz
+          fi
+
+      - name: Download wgrib2 and pywgrib2_s.py
+        run: |
+          if [ ! -f 3rd-party/wgrib2.tgz ] ; then
+            make 3rd-party/wgrib2.tgz
+          fi
+          if [ ! -f 3rd-party/pywgrib2_s.py ] ; then
+            make 3rd-party/pywgrib2_s.py
+          fi
+          ls -l 3rd-party
+          if [ -f 3rd-party/pywgrib2_s/pywgrib2_s.py ] ; then
+            ls -l 3rd-party/pywgrib2_s/pywgrib2_s.py
+            echo
+            tar -tvzpf 3rd-party/pywgrib2_s.tgz
+          fi
+          
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.7.0
+        with:
+          driver-opts: network=host
+
+      - name: Load image - builder
+        if: 'false'
+        run: |
+          docker load --input ${{ runner.temp }}/builder.tar
+          docker image ls -a
+          docker image tag builder:latest localhost:5000/builder:latest
+          docker image push localhost:5000/builder:latest
+
+      - name: Load image - lambda-base
+        if: 'false'
+        run: |
+          docker load --input ${{ runner.temp }}/lambda-base.tar
+          docker image ls -a
+          docker image tag lambda-base:latest localhost:5000/lambda-base:latest
+          docker image push localhost:5000/lambda-base:latest
+
+      - name: Build lambda-wgrib2 image
+        if: 'false'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-wgrib2
+          push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          tags: localhost:5000/lambda-wgrib2:latest
+          #tags: ${{ steps.prep.outputs.tagged_image }}
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
+          ## outputs: type=docker and push can not be used together
+          # outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
+          build-contexts: |
+            builder=docker-image://localhost:5000/lambda-base:latest
+            builder=docker-image://localhost:5000/builder:latest
+
+      - name: Upload artifact
+        if: 'false'
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: lambda-wgrib2
+          path: ${{ runner.temp }}/lambda-wgrib2.tar
+
+      - name: Build builder image - gha
+        if: 'true'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-wgrib2
+          push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          tags: localhost:5000/lambda-wgrib2:latest
+          #tags: ${{ steps.prep.outputs.tagged_image }}
+          cache-from: type=gha
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          cache-to: type=gha,mode=max
+
+      - name: Move cache
+        if: 'false'
+        run: |
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
+
+      - name: Build lambda-pywgrib2 image
+        if: 'false'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-pywgrib2
+          push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          tags: localhost:5000/lambda-pywgrib2:latest
+          #tags: ${{ steps.prep.outputs.tagged_image }}
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
+          build-contexts: |
+            builder=docker-image://localhost:5000/builder:latest
+
+      - name: Upload artifact
+        if: 'false'
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: lambda-pywgrib2
+          path: ${{ runner.temp }}/lambda-pywgrib2.tar
+
+      - name: Build builder image - gha
+        if: 'true'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-pywgrib2
+          push: true
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          tags: localhost:5000/lambda-pywgrib2:latest
+          #tags: ${{ steps.prep.outputs.tagged_image }}
+          cache-from: type=gha
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          cache-to: type=gha,mode=max
+
+      - name: Move cache
+        if: 'false'
+        run: |
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
+
+      - name: Set variables
+        id: vars
+        run: |
+          # access with 'echo ${{ steps.vars.outputs.tag }}'
+          echo "tag=${GITHUB_REF#refs/*/}" >> ${GITHUB_OUTPUT}
+          echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
+          echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
+
+      # Extract metadata (tags, labels) for Docker lambda-wgrib2
+      # https://github.com/docker/metadata-action
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-wgrib2
+        uses: docker/metadata-action@v4.6.0
+        with:
+          images: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-wgrib2
+          labels: |
+            org.opencontainers.image.description=Build of lambda-wgrib2 from AWS Lambda image
+            org.opencontainers.image.title=lambda-wgrib2
+          tags: |
+            # minimal (short sha)
+            type=sha
+            # full length sha
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern=v{{version}}
+
+      # Extract metadata (tags, labels) for Docker lambda-pywgrib2
+      # https://github.com/docker/metadata-action
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-pywgrib2
+        uses: docker/metadata-action@v4.6.0
+        with:
+          images: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2
+          labels: |
+            org.opencontainers.image.description=Build of lambda-pywgrib2 from AWS Python Lambda image
+            org.opencontainers.image.title=lambda-pywgrib2
+          tags: |
+            # minimal (short sha)
+            type=sha
+            # full length sha
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern=v{{version}}
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.GHREGISTRY }}
+        #if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2.2.0
+        with:
+          registry: ${{ env.GHREGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish lambda-wgrib2 image
+        if: 'false'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-wgrib2
+          push: false
+          #push: github.event_name != 'pull_request'
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          labels: ${{ steps.meta-wgrib2.outputs.labels }}
+          #tags: localhost:5000/lambda-wgrib2:latest
+          tags: ${{ steps.meta-wgrib2.outputs.tags }}
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          #cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
+          ## outputs: type=docker and push can not be used together
+          # outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
+          build-contexts: |
+            builder=docker-image://localhost:5000/builder:latest
+            builder=docker-image://localhost:5000/lambda-wgrib2:latest
+
+      - name: Build and publish lambda-pywgrib2 image
+        if: 'false'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-pywgrib2
+          push: false
+          #push: github.event_name != 'pull_request'
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          labels: ${{ steps.meta-pywgrib2.outputs.labels }}
+          #tags: localhost:5000/lambda-pywgrib2:latest
+          tags: ${{ steps.meta-pywgrib2.outputs.tags }}
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          # Note the mode=max here
+          # More: https://github.com/moby/buildkit#--export-cache-options
+          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
+          #cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
+          ## outputs: type=docker and push can not be used together
+          # outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2.tar
+          build-contexts: |
+            builder=docker-image://localhost:5000/builder:latest
+            builder=docker-image://localhost:5000/lambda-pywgrib2:latest
