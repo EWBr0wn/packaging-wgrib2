@@ -51,6 +51,7 @@ jobs:
           buildkitd-flags: --debug
 
       - name: Cache Docker layers
+        if: 'false'
         id: cache-foundation
         uses: actions/cache@v3.3.1
         with:
@@ -70,6 +71,7 @@ jobs:
           fi
 
       - name: Upload cmake.tgz
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: cached-cmake.tgz
@@ -77,7 +79,7 @@ jobs:
 
        ## Gleaned from https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
       - name: Build foundation image
-        if: 'true'
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -97,6 +99,7 @@ jobs:
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
 
       - name: Build and export
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -110,6 +113,7 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/foundation.tar
 
       - name: Upload artifact
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: foundation
@@ -117,7 +121,7 @@ jobs:
 
       ## Gleaned from https://www.hyperdx.io/blog/docker-buildx-cache-with-github-actions
       - name: Build foundation image - gha
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -137,7 +141,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Move cache after foundation build
-        if: 'true'
+        if: 'false'
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
@@ -145,7 +149,7 @@ jobs:
 #  lambda-base:
 
       - name: Build lambda-base image
-        if: 'true'
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -165,6 +169,7 @@ jobs:
           cache-to: type=local,mode=max,dest=${{ runner.temp }}/.buildx-cache-new
 
       - name: Build and export
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -178,13 +183,14 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/lambda-base.tar
 
       - name: Upload artifact
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-base
           path: ${{ runner.temp }}/lambda-base.tar
 
       - name: Build lambda-base image - gha
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -204,7 +210,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Move cache
-        if: 'true'
+        if: 'false'
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
@@ -219,7 +225,7 @@ jobs:
           fi
 
       - name: Build builder image
-        if: 'true'
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -242,6 +248,7 @@ jobs:
             foundation=docker-image://localhost:5000/foundation:latest
 
       - name: Build and export
+        if: 'false'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -257,13 +264,14 @@ jobs:
             foundation=docker-image://localhost:5000/foundation:latest
 
       - name: Upload artifact
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: builder
           path: ${{ runner.temp }}/builder.tar
 
       - name: Build builder image - gha
-        if: 'false'
+        if: 'true'
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
@@ -283,7 +291,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Move cache
-        if: 'true'
+        if: 'false'
         run: |
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv -v ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
