@@ -338,6 +338,11 @@ jobs:
             make 3rd-party/pywgrib2_s.py
           fi
           ls -l 3rd-party
+          if [ ! -f 3rd-party/pywgrib2_s/pywgrib2_s.py ] ; then
+            ls -l 3rd-party/pywgrib2_s/pywgrib2_s.py
+            echo
+            tar -tvzpf 3rd-party/pywgrib2_s.tgz
+          fi
           
       - name: Setup Docker Buildx
         id: buildx
