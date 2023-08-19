@@ -329,6 +329,13 @@ jobs:
           name: lambda-base
           path: ${{ runner.temp }}
 
+      - name: Download cmake
+        if: 'true'
+        run: |
+          if [ ! -f 3rd-party/cmake.tgz ] ; then
+            make 3rd-party/cmake.tgz
+          fi
+
       - name: Download wgrib2 and pywgrib2_s.py
         run: |
           if [ ! -f 3rd-party/wgrib2.tgz ] ; then
