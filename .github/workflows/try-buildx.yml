@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    # Publish semver tags as releases.
+    tags: [ 'v4.*.*' ]
   pull_request:
     branches:
       - main
@@ -509,7 +511,7 @@ jobs:
             type=sha
             # full length sha
             type=sha,format=long
-            type=ref,event=branch
+            #type=ref,event=branch
             type=semver,pattern=v{{version}}
 
       # Extract metadata (tags, labels) for Docker lambda-pywgrib2
@@ -527,7 +529,7 @@ jobs:
             type=sha
             # full length sha
             type=sha,format=long
-            type=ref,event=branch
+            #type=ref,event=branch
             type=semver,pattern=v{{version}}
 
       # Login against a Docker registry except on PR
