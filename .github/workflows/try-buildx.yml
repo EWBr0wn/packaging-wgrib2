@@ -522,9 +522,9 @@ jobs:
         run: |
           # access with 'echo ${{ steps.meta-wgrib2.outputs.tags }}'
           echo "meta-wgrib2 tags"
-          echo "${{ toJson(steps.meta-wgrib2.outputs.tags) }}"
+          echo "${{ steps.meta-wgrib2.outputs.tags }}"
           echo "meta-wgrib2 labels"
-          echo "${{ toJson(steps.meta-wgrib2.outputs.labels) }}"
+          echo "${{ steps.meta-wgrib2.outputs.labels }}"
 
       # Extract metadata (tags, labels) for Docker lambda-pywgrib2
       # https://github.com/docker/metadata-action
