@@ -587,6 +587,29 @@ jobs:
           tags: ${{ steps.meta-wgrib2.outputs.tags }}
           cache-from: type=gha
 
+      - name: Build and export
+        if: 'true'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-wgrib2
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          labels: ${{ steps.meta-wgrib2.outputs.labels }}
+          tags: ${{ steps.meta-wgrib2.outputs.tags }}
+          cache-from: type=gha
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
+
+      - name: Upload artifact
+        if: 'true'
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: foundation
+          path: ${{ runner.temp }}/lambda-wgrib2.tar
+      
       - name: Build and publish lambda-pywgrib2 image
         if: 'false'
         uses: docker/build-push-action@v4.1.1
@@ -631,3 +654,26 @@ jobs:
           #tags: localhost:5000/lambda-pywgrib2:latest
           tags: ${{ steps.meta-pywgrib2.outputs.tags }}
           cache-from: type=gha
+
+      - name: Build and export
+        if: 'true'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-pywgrib2
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          labels: ${{ steps.meta-pywgrib2.outputs.labels }}
+          tags: ${{ steps.meta-pywgrib2.outputs.tags }}
+          cache-from: type=gha
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2.tar
+
+      - name: Upload artifact
+        if: 'true'
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: foundation
+          path: ${{ runner.temp }}/lambda-pywgrib2.tar
