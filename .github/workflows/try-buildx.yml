@@ -492,8 +492,11 @@ jobs:
         id: vars
         run: |
           # access with 'echo ${{ steps.vars.outputs.tag }}'
+          echo "tag=${GITHUB_REF#refs/*/}"
           echo "tag=${GITHUB_REF#refs/*/}" >> ${GITHUB_OUTPUT}
+          echo "sha=${GITHUB_SHA}"
           echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
+          echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}"
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
 
       # Extract metadata (tags, labels) for Docker lambda-wgrib2
