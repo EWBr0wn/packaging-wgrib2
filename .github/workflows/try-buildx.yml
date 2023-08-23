@@ -607,7 +607,7 @@ jobs:
         if: 'true'
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: foundation
+          name: lambda-wgrib2.tar
           path: ${{ runner.temp }}/lambda-wgrib2.tar
       
       - name: Build and publish lambda-pywgrib2 image
@@ -675,5 +675,5 @@ jobs:
         if: 'true'
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: foundation
+          name: lambda-pywgrib2.tar
           path: ${{ runner.temp }}/lambda-pywgrib2.tar
