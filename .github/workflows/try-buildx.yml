@@ -525,6 +525,7 @@ jobs:
           echo "${{ steps.meta-wgrib2.outputs.tags }}"
           echo "meta-wgrib2 labels"
           echo "${{ steps.meta-wgrib2.outputs.labels }}"
+          echo "${DOCKER_METADATA_OUTPUT_VERSION}"
 
       # Extract metadata (tags, labels) for Docker lambda-pywgrib2
       # https://github.com/docker/metadata-action
