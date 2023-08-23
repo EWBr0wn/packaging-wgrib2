@@ -496,6 +496,8 @@ jobs:
           echo "tag=${GITHUB_REF#refs/*/}" >> ${GITHUB_OUTPUT}
           echo "sha=${GITHUB_SHA}"
           echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
+          echo "shortsha=${DOCKER_METADATA_OUTPUT_VERSION}"
+          echo "shortsha=${DOCKER_METADATA_OUTPUT_VERSION}" >> ${GITHUB_OUTPUT}
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}"
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
 
@@ -519,13 +521,17 @@ jobs:
 
       - name: Debug variables
         id: debugmetavars
+        env:
+          GWTAGS:   ${{ toJSON(steps.meta-wgrib2.outputs.tags) }}
+          GWLABELS: ${{ toJSON(steps.meta-wgrib2.outputs.labels) }}
         run: |
           echo "${DOCKER_METADATA_OUTPUT_VERSION}"
-          # access with - echo '${{ steps.meta-wgrib2.outputs.tags }}'
+          echo "meta-wgrib2 shortsha"
+          echo "${{ steps.meta-wgrib2.outputs.shortsha }}"
           echo "meta-wgrib2 tags"
-          echo "${{ steps.meta-wgrib2.outputs.tags }}"
+          echo "${GWTAGS}"
           echo "meta-wgrib2 labels"
-          echo "${{ steps.meta-wgrib2.outputs.labels }}"
+          echo "${GWLABELS}"
 
       # Extract metadata (tags, labels) for Docker lambda-pywgrib2
       # https://github.com/docker/metadata-action
