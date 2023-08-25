@@ -720,3 +720,9 @@ jobs:
       - name: Debug
         run: |
           ls -lR ${{ runner.temp }}/pylambda-layer
+
+      - name: Upload Python Lambda layer
+        uses: actions/upload-artifact@v3
+        with:
+          name: pylambda-layer
+          path: ${{ runner.temp }}/pylambda-layer/*/*
