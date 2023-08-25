@@ -739,5 +739,5 @@ jobs:
           allowUpdates: true
           prerelease: true
           draft: true
-          tag: {{ steps.shavar.outputs.shortsha }}
+          tag: test
           artifacts: ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar,${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}
