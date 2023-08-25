@@ -707,9 +707,7 @@ jobs:
         with:
           image: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2:${{ steps.shavar.outputs.shortsha }}
           destination: ${{ runner.temp }}/pylambda-layer
-          path: |
-            /var/lang/lib/libwgrib2.so
-            /opt/wgrib2/lib/python/pywgrib2_s.py
+          path: /opt/wgrib2/lib/python/pywgrib2_s.py
 
       - name: Debug
         run: |
