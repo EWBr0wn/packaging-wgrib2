@@ -730,7 +730,7 @@ jobs:
       - name: Download artifact - pylambda-layer_${{ steps.shavar.outputs.shortsha }}
         uses: actions/download-artifact@v3.0.1
         with:
-          name: pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          name: pylambda-layer_${{ steps.shavar.outputs.shortsha }}
           path: ${{ runner.temp }}
 
       - name: Create Release
@@ -738,4 +738,4 @@ jobs:
         with:
           allowUpdates: true
           prerelease: true
-          artifacts: ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar,${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          artifacts: ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar,${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}
