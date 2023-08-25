@@ -700,3 +700,17 @@ jobs:
         with:
           name: lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
           path: ${{ runner.temp }}/lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+
+      - name: Extract pywgrib2_s and libwgrib2.so
+        uses: shrink/actions-docker-extract@v2
+        id: extract
+        with:
+          image: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2:${{ steps.shavar.outputs.shortsha }}
+          destination: ${{ runner.temp }}/pylambda-layer
+          path: |
+            /var/lang/lib/libwgrib2.so
+            /opt/wgrib2/lib/python/pywgrib2_s.py
+
+      - name: Debug
+        run: |
+          ls -l ${{ runner.temp }}/pylambda-layer
