@@ -492,12 +492,10 @@ jobs:
         id: vars
         run: |
           # access with 'echo ${{ steps.vars.outputs.tag }}'
-          echo "tag=${GITHUB_REF#refs/*/}"
+          echo "${GITHUB_REF} tag=${GITHUB_REF#refs/*/}"
           echo "tag=${GITHUB_REF#refs/*/}" >> ${GITHUB_OUTPUT}
           echo "sha=${GITHUB_SHA}"
           echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
-          echo "shortsha=${DOCKER_METADATA_OUTPUT_VERSION}"
-          echo "shortsha=${DOCKER_METADATA_OUTPUT_VERSION}" >> ${GITHUB_OUTPUT}
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}"
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
 
@@ -519,6 +517,12 @@ jobs:
             #type=ref,event=branch
             type=semver,pattern=v{{version}}
 
+      - name: Set shortsha variable
+        id: shavar
+        run: |
+          echo "shortsha=${DOCKER_METADATA_OUTPUT_VERSION}"
+          echo "shortsha=${DOCKER_METADATA_OUTPUT_VERSION}" >> ${GITHUB_OUTPUT}
+          
       - name: Debug variables
         id: debugmetavars
         env:
@@ -527,7 +531,7 @@ jobs:
         run: |
           echo "${DOCKER_METADATA_OUTPUT_VERSION}"
           echo "meta-wgrib2 shortsha"
-          echo "${{ steps.meta-wgrib2.outputs.shortsha }}"
+          echo "${{ steps.shavar.outputs.shortsha }}"
           echo "meta-wgrib2 tags"
           echo "${GWTAGS}"
           echo "meta-wgrib2 labels"
