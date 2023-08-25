@@ -624,14 +624,14 @@ jobs:
           labels: ${{ steps.meta-wgrib2.outputs.labels }}
           tags: ${{ steps.meta-wgrib2.outputs.tags }}
           cache-from: type=gha
-          outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2.tar
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2_${{ steps.shavar.outputs.shortsha }}.tar
 
       - name: Upload artifact
         if: 'true'
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: lambda-wgrib2_sha-${{ steps.vars.outputs.sha }}.tar
-          path: ${{ runner.temp }}/lambda-wgrib2.tar
+          name: lambda-wgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+          path: ${{ runner.temp }}/lambda-wgrib2_${{ steps.shavar.outputs.shortsha }}.tar
       
       - name: Build and publish lambda-pywgrib2 image
         if: 'false'
@@ -692,11 +692,11 @@ jobs:
           labels: ${{ steps.meta-pywgrib2.outputs.labels }}
           tags: ${{ steps.meta-pywgrib2.outputs.tags }}
           cache-from: type=gha
-          outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2.tar
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
 
       - name: Upload artifact
         if: 'true'
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: lambda-pywgrib2_sha-${{ steps.vars.outputs.sha }}.tar
-          path: ${{ runner.temp }}/lambda-pywgrib2.tar
+          name: lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+          path: ${{ runner.temp }}/lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
