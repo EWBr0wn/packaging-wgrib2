@@ -733,6 +733,11 @@ jobs:
           name: pylambda-layer_${{ steps.shavar.outputs.shortsha }}
           path: ${{ runner.temp }}
 
+      - name: Debug
+        run: |
+          ls -l ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar
+          ls -lR ${{ runner.temp }}/pylambda-layer
+
       - name: Create Release
         uses: ncipollo/release-action@v1.13.0
         with:
