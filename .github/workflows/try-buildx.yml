@@ -695,48 +695,64 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
 
       - name: Upload artifact
-        if: 'true'
+        if: 'false'
         uses: actions/upload-artifact@v3.1.2
         with:
           name: lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
           path: ${{ runner.temp }}/lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
 
       - name: Extract pywgrib2_s.py
+        if: 'true'
         uses: shrink/actions-docker-extract@v2
         id: extract-py
         with:
           image: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2:${{ steps.shavar.outputs.shortsha }}
-          destination: ${{ runner.temp }}/pylambda-layer/opt/wgrib2/lib/python
+          destination: ${{ github.workspace }}/pylambda-layer/opt/wgrib2/lib/python
           path: /opt/wgrib2/lib/python/pywgrib2_s.py
 
       - name: Extract libwgrib2.so
+        if: 'true'
         uses: shrink/actions-docker-extract@v2
         id: extract-lib
         with:
           image: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2:${{ steps.shavar.outputs.shortsha }}
-          destination: ${{ runner.temp }}/pylambda-layer/var/lang/lib
+          destination: ${{ github.workspace }}/pylambda-layer/var/lang/lib
           path: /var/lang/lib/libwgrib2.so
 
       - name: Debug
+        if: 'true'
         run: |
-          ls -lR ${{ runner.temp }}/pylambda-layer
+          ls -lR ${{ github.workspace }}/pylambda-layer
 
       - name: Upload Python Lambda layer
+        if: 'false'
         uses: actions/upload-artifact@v3
         with:
           name: pylambda-layer_${{ steps.shavar.outputs.shortsha }}
           path: ${{ runner.temp }}/pylambda-layer/*/*
 
       - name: Download artifact - pylambda-layer_${{ steps.shavar.outputs.shortsha }}
+        if: 'false'
         uses: actions/download-artifact@v3.0.1
         with:
           name: pylambda-layer_${{ steps.shavar.outputs.shortsha }}
           path: ${{ runner.temp }}
-
+          
+      - name: Create Zip for Python Lambda layer
+        uses: vimtor/action-zip@v1.1
+        with:
+          recursive: true
+          files: ${{ github.workspace }}/pylambda-layer
+          dest: ${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+            
       - name: Debug
         run: |
-          ls -l ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar
-          ls -lR ${{ runner.temp }}/pylambda-layer
+          ls -l ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar \
+                ${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          echo
+          unzip -t ${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          echo
+          ls -lR ${{ github.workspace }}/pylambda-layer
 
       - name: Create Release
         uses: ncipollo/release-action@v1.13.0
@@ -745,4 +761,4 @@ jobs:
           prerelease: true
           draft: true
           tag: test
-          artifacts: ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar,${{ runner.temp }}/pylambda-layer
+          artifacts: ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar,${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
