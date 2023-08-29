@@ -744,14 +744,14 @@ jobs:
           recursive: true
           # /home/runner/work/packaging-wgrib2/packaging-wgrib2
           files: pylambda-layer/
-          dest: ${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          dest: pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
             
       - name: Debug
         run: |
           ls -l ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar \
-                ${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+                ${{ github.workspace }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
           echo
-          unzip -t ${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          unzip -t pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
           echo
           ls -lR ${{ github.workspace }}/pylambda-layer
 
@@ -762,4 +762,4 @@ jobs:
           prerelease: true
           draft: true
           tag: test
-          artifacts: ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar,${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          artifacts: ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar,${{ github.workspace }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
