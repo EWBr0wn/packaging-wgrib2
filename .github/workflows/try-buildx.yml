@@ -743,7 +743,7 @@ jobs:
         with:
           recursive: true
           # /home/runner/work/packaging-wgrib2/packaging-wgrib2
-          files: ${{ github.workspace }}/pylambda-layer/*
+          files: pylambda-layer/
           dest: ${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
             
       - name: Debug
