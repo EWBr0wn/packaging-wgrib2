@@ -742,7 +742,8 @@ jobs:
         uses: vimtor/action-zip@v1.1
         with:
           recursive: true
-          files: ${{ github.workspace }}/pylambda-layer
+          # /home/runner/work/packaging-wgrib2/packaging-wgrib2
+          files: ${{ github.workspace }}/pylambda-layer/*
           dest: ${{ runner.temp }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
             
       - name: Debug
