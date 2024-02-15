@@ -31,7 +31,7 @@ jobs:
           - 5000:5000
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache downloaded software
         if: 'false'
@@ -47,7 +47,7 @@ jobs:
 
       - name: Setup Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2.7.0
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
           buildkitd-flags: --debug
@@ -82,7 +82,7 @@ jobs:
        ## Gleaned from https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
       - name: Build foundation image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -102,7 +102,7 @@ jobs:
 
       - name: Build and export
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -124,7 +124,7 @@ jobs:
       ## Gleaned from https://www.hyperdx.io/blog/docker-buildx-cache-with-github-actions
       - name: Build foundation image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -152,7 +152,7 @@ jobs:
 
       - name: Build lambda-base image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -172,7 +172,7 @@ jobs:
 
       - name: Build and export
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -193,7 +193,7 @@ jobs:
 
       - name: Build lambda-base image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -228,7 +228,7 @@ jobs:
 
       - name: Build builder image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -251,7 +251,7 @@ jobs:
 
       - name: Build and export
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -274,7 +274,7 @@ jobs:
 
       - name: Build builder image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -315,7 +315,7 @@ jobs:
       - foundation
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download artifact
         if: 'false'
@@ -355,7 +355,7 @@ jobs:
           
       - name: Setup Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2.7.0
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
 
@@ -377,7 +377,7 @@ jobs:
 
       - name: Build lambda-wgrib2 image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -409,7 +409,7 @@ jobs:
 
       - name: Build builder image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -435,7 +435,7 @@ jobs:
 
       - name: Build lambda-pywgrib2 image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -464,7 +464,7 @@ jobs:
 
       - name: Build builder image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -567,7 +567,7 @@ jobs:
 
       - name: Build and publish lambda-wgrib2 image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -594,7 +594,7 @@ jobs:
 
       - name: Build and publish lambda-wgrib2 image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -612,7 +612,7 @@ jobs:
 
       - name: Build and export
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -635,7 +635,7 @@ jobs:
       
       - name: Build and publish lambda-pywgrib2 image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -662,7 +662,7 @@ jobs:
 
       - name: Build and publish lambda-pywgrib2 image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -680,7 +680,7 @@ jobs:
 
       - name: Build and export
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
