@@ -34,7 +34,6 @@ RUN tar -xzf cmake.tgz \
 FROM foundation as builder
 
 COPY 3rd-party/wgrib2.tgz .
-COPY wgrib2-v3.1.2-fixed-makefile .
 
 RUN tar -xzf wgrib2.tgz \
   && cd grib2 \
