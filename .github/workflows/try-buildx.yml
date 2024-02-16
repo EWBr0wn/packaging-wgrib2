@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    # Publish semver tags as releases.
+    tags: [ 'v4.*.*' ]
   pull_request:
     branches:
       - main
@@ -29,7 +31,7 @@ jobs:
           - 5000:5000
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache downloaded software
         if: 'false'
@@ -45,7 +47,7 @@ jobs:
 
       - name: Setup Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2.7.0
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
           buildkitd-flags: --debug
@@ -72,7 +74,7 @@ jobs:
 
       - name: Upload cmake.tgz
         if: 'false'
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: cached-cmake.tgz
           path: 3rd-party/cmake.tgz
@@ -80,7 +82,7 @@ jobs:
        ## Gleaned from https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
       - name: Build foundation image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -100,7 +102,7 @@ jobs:
 
       - name: Build and export
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -114,7 +116,7 @@ jobs:
 
       - name: Upload artifact
         if: 'false'
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: foundation
           path: ${{ runner.temp }}/foundation.tar
@@ -122,7 +124,7 @@ jobs:
       ## Gleaned from https://www.hyperdx.io/blog/docker-buildx-cache-with-github-actions
       - name: Build foundation image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -150,7 +152,7 @@ jobs:
 
       - name: Build lambda-base image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -170,7 +172,7 @@ jobs:
 
       - name: Build and export
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -184,14 +186,14 @@ jobs:
 
       - name: Upload artifact
         if: 'false'
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: lambda-base
           path: ${{ runner.temp }}/lambda-base.tar
 
       - name: Build lambda-base image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -226,7 +228,7 @@ jobs:
 
       - name: Build builder image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -249,7 +251,7 @@ jobs:
 
       - name: Build and export
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -265,14 +267,14 @@ jobs:
 
       - name: Upload artifact
         if: 'false'
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: builder
           path: ${{ runner.temp }}/builder.tar
 
       - name: Build builder image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -304,7 +306,7 @@ jobs:
         ports:
           - 5000:5000
     permissions:
-      contents: read
+      contents: write
       packages: write
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
@@ -313,7 +315,7 @@ jobs:
       - foundation
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download artifact
         if: 'false'
@@ -353,7 +355,7 @@ jobs:
           
       - name: Setup Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2.7.0
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
 
@@ -375,7 +377,7 @@ jobs:
 
       - name: Build lambda-wgrib2 image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -400,14 +402,14 @@ jobs:
 
       - name: Upload artifact
         if: 'false'
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: lambda-wgrib2
           path: ${{ runner.temp }}/lambda-wgrib2.tar
 
       - name: Build builder image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -433,7 +435,7 @@ jobs:
 
       - name: Build lambda-pywgrib2 image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -455,14 +457,14 @@ jobs:
 
       - name: Upload artifact
         if: 'false'
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: lambda-pywgrib2
           path: ${{ runner.temp }}/lambda-pywgrib2.tar
 
       - name: Build builder image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -490,15 +492,18 @@ jobs:
         id: vars
         run: |
           # access with 'echo ${{ steps.vars.outputs.tag }}'
+          echo "${GITHUB_REF} tag=${GITHUB_REF#refs/*/}"
           echo "tag=${GITHUB_REF#refs/*/}" >> ${GITHUB_OUTPUT}
+          echo "sha=${GITHUB_SHA}"
           echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
+          echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}"
           echo "repoowner=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_OUTPUT}
 
       # Extract metadata (tags, labels) for Docker lambda-wgrib2
       # https://github.com/docker/metadata-action
       - name: Extract metadata (tags, labels) for Docker
         id: meta-wgrib2
-        uses: docker/metadata-action@v4.6.0
+        uses: docker/metadata-action@v5.5.1
         with:
           images: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-wgrib2
           labels: |
@@ -509,14 +514,34 @@ jobs:
             type=sha
             # full length sha
             type=sha,format=long
-            type=ref,event=branch
+            #type=ref,event=branch
             type=semver,pattern=v{{version}}
+
+      - name: Set shortsha variable
+        id: shavar
+        run: |
+          echo "shortsha=${DOCKER_METADATA_OUTPUT_VERSION}"
+          echo "shortsha=${DOCKER_METADATA_OUTPUT_VERSION}" >> ${GITHUB_OUTPUT}
+          
+      - name: Debug variables
+        id: debugmetavars
+        env:
+          GWTAGS:   ${{ toJSON(steps.meta-wgrib2.outputs.tags) }}
+          GWLABELS: ${{ toJSON(steps.meta-wgrib2.outputs.labels) }}
+        run: |
+          echo "${DOCKER_METADATA_OUTPUT_VERSION}"
+          echo "meta-wgrib2 shortsha"
+          echo "${{ steps.shavar.outputs.shortsha }}"
+          echo "meta-wgrib2 tags"
+          echo "${GWTAGS}"
+          echo "meta-wgrib2 labels"
+          echo "${GWLABELS}"
 
       # Extract metadata (tags, labels) for Docker lambda-pywgrib2
       # https://github.com/docker/metadata-action
       - name: Extract metadata (tags, labels) for Docker
         id: meta-pywgrib2
-        uses: docker/metadata-action@v4.6.0
+        uses: docker/metadata-action@v5.5.1
         with:
           images: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2
           labels: |
@@ -527,14 +552,14 @@ jobs:
             type=sha
             # full length sha
             type=sha,format=long
-            type=ref,event=branch
+            #type=ref,event=branch
             type=semver,pattern=v{{version}}
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.GHREGISTRY }}
         #if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2.2.0
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.GHREGISTRY }}
           username: ${{ github.actor }}
@@ -542,7 +567,7 @@ jobs:
 
       - name: Build and publish lambda-wgrib2 image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -569,7 +594,7 @@ jobs:
 
       - name: Build and publish lambda-wgrib2 image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -585,9 +610,32 @@ jobs:
           tags: ${{ steps.meta-wgrib2.outputs.tags }}
           cache-from: type=gha
 
+      - name: Build and export
+        if: 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-wgrib2
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          labels: ${{ steps.meta-wgrib2.outputs.labels }}
+          tags: ${{ steps.meta-wgrib2.outputs.tags }}
+          cache-from: type=gha
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-wgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+
+      - name: Upload artifact
+        if: 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambda-wgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+          path: ${{ runner.temp }}/lambda-wgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+      
       - name: Build and publish lambda-pywgrib2 image
         if: 'false'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -614,7 +662,7 @@ jobs:
 
       - name: Build and publish lambda-pywgrib2 image - gha
         if: 'true'
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
@@ -629,3 +677,89 @@ jobs:
           #tags: localhost:5000/lambda-pywgrib2:latest
           tags: ${{ steps.meta-pywgrib2.outputs.tags }}
           cache-from: type=gha
+
+      - name: Build and export
+        if: 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: Dockerfile
+          # Set the desired build target here
+          target: lambda-pywgrib2
+          # see https://github.com/docker/build-push-action/issues/820
+          platforms: linux/amd64
+          labels: ${{ steps.meta-pywgrib2.outputs.labels }}
+          tags: ${{ steps.meta-pywgrib2.outputs.tags }}
+          cache-from: type=gha
+          outputs: type=docker,dest=${{ runner.temp }}/lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+
+      - name: Upload artifact
+        if: 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+          path: ${{ runner.temp }}/lambda-pywgrib2_${{ steps.shavar.outputs.shortsha }}.tar
+
+      - name: Extract pywgrib2_s.py
+        if: 'true'
+        uses: shrink/actions-docker-extract@v3
+        id: extract-py
+        with:
+          image: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2:${{ steps.shavar.outputs.shortsha }}
+          destination: ${{ github.workspace }}/pylambda-layer/opt/wgrib2/lib/python
+          path: /opt/wgrib2/lib/python/pywgrib2_s.py
+
+      - name: Extract libwgrib2.so
+        if: 'true'
+        uses: shrink/actions-docker-extract@v3
+        id: extract-lib
+        with:
+          image: ${{ env.GHREGISTRY }}/${{ steps.vars.outputs.repoowner }}/lambda-pywgrib2:${{ steps.shavar.outputs.shortsha }}
+          destination: ${{ github.workspace }}/pylambda-layer/var/lang/lib
+          path: /var/lang/lib/libwgrib2.so
+
+      - name: Debug
+        if: 'true'
+        run: |
+          ls -lR ${{ github.workspace }}/pylambda-layer
+
+      - name: Upload Python Lambda layer
+        if: 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pylambda-layer_${{ steps.shavar.outputs.shortsha }}
+          path: ${{ runner.temp }}/pylambda-layer/*/*
+
+      - name: Download artifact - pylambda-layer_${{ steps.shavar.outputs.shortsha }}
+        if: 'false'
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: pylambda-layer_${{ steps.shavar.outputs.shortsha }}
+          path: ${{ runner.temp }}
+          
+      - name: Create Zip for Python Lambda layer
+        uses: vimtor/action-zip@v1.1
+        with:
+          recursive: true
+          # /home/runner/work/packaging-wgrib2/packaging-wgrib2
+          files: pylambda-layer/
+          dest: pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+            
+      - name: Debug
+        run: |
+          ls -l ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar \
+                ${{ github.workspace }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          echo
+          unzip -t pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
+          echo
+          ls -lR ${{ github.workspace }}/pylambda-layer
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          allowUpdates: true
+          prerelease: true
+          draft: true
+          tag: test
+          artifacts: ${{ runner.temp }}/lambda-*_${{ steps.shavar.outputs.shortsha }}.tar,${{ github.workspace }}/pylambda-layer_${{ steps.shavar.outputs.shortsha }}.zip
